@@ -128,6 +128,7 @@ func crawl(urlStr string) *crawlbase.Page {
 	client := http.Client{Timeout: 30 * time.Second}
 	req, err := http.NewRequest("GET", urlStr, nil)
 	logFatal(err)
+
 	req.Header.Set("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
 	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36")
 
@@ -149,10 +150,42 @@ func crawl(urlStr string) *crawlbase.Page {
 
 	baseUrl, err := url.Parse(urlStr)
 	logFatal(err)
+	
+	page := crawlbase.Page{}
+	page.Hrefs = getHrefs(doc,baseUrl)
+	page.Forms = getFormUrls(doc,baseUrl)
+	page.Links = getLinks(doc,baseUrl)
+	
+	page.CrawlTime = int(time.Now().Unix())
+	page.Url = urlStr
+	page.RespCode = res.StatusCode
+	page.RespDuration = int(timeDur.Seconds() * 1000)
+	page.Uid = toSha256(urlStr)
+	page.Body = string(body)
+	return &page
+}
 
+func getLinks(doc *goquery.Document,baseUrl *url.URL)[]crawlbase.Link{
+	links := []crawlbase.Link{}
+	doc.Find("link").Each(func(i int, s *goquery.Selection) {
+		link := crawlbase.Link{}
+		href, exists := s.Attr("href")
+		if exists{
+			link.Url = href;
+		}
+		linkType, exists := s.Attr("type")
+		if exists{
+			link.Type = linkType;
+		}
+		links = append(links,link)
+	})
+	return links
+}
+
+func getHrefs(doc *goquery.Document,baseUrl *url.URL)[]string{
 	hrefs := []string{}
 	hrefsTest := map[string]bool{}
-
+	
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
 		href, exists := s.Attr("href")
 		if exists {
@@ -164,16 +197,39 @@ func crawl(urlStr string) *crawlbase.Page {
 			}
 		}
 	})
+	return hrefs
+}
 
-	page := crawlbase.Page{}
-	page.Links = hrefs
-	page.CrawlTime = int(time.Now().Unix())
-	page.Url = urlStr
-	page.RespCode = res.StatusCode
-	page.RespDuration = int(timeDur.Seconds() * 1000)
-	page.Uid = toSha256(urlStr)
-	page.Body = string(body)
-	return &page
+func getFormUrls(doc *goquery.Document,baseUrl *url.URL)[]crawlbase.Form{
+	forms := []crawlbase.Form{}
+	
+	doc.Find("form").Each(func(i int, s *goquery.Selection) {
+		form := crawlbase.Form{}
+		href, exists := s.Attr("action")
+		if exists{
+			form.Url = href;
+		}
+		method, exists := s.Attr("method")
+		if exists{
+			form.Method = method
+		}
+		form.Inputs = []crawlbase.FormInput{}
+		s.Find("input").Each(func(i int, s *goquery.Selection){
+			input := crawlbase.FormInput{}
+			name, exists := s.Attr("name")
+			if exists{
+				input.Name = name
+			}
+			value, exists := s.Attr("value")
+			if exists{
+				input.Value = value
+			}
+			form.Inputs = append(form.Inputs,input)
+		})
+		
+		forms = append(forms,form)
+	})
+	return forms
 }
 
 func toSha256(message string) string {

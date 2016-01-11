@@ -254,6 +254,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
             localStorage.setItem("dangerTags", $scope.htmlValidator.dangerTags);
             localStorage.setItem("dangerAttributes", $scope.htmlValidator.dangerAttributes);
             localStorage.setItem("scanVectors", $scope.scanner.scanVectors);
+            localStorage.setItem("filterText",$scope.filterText);
         }
 
         function loadUserSettings() {
