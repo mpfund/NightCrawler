@@ -2,8 +2,6 @@ package main
 
 import (
 	"bytes"
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"github.com/BlackEspresso/crawlbase"
@@ -14,6 +12,7 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+	"github.com/robertkrimen/otto"
 )
 
 type Response struct {
@@ -29,11 +28,26 @@ func main() {
 	http.HandleFunc("/", staticSites)
 	http.HandleFunc("/api/crawl", apiCrawlRequest)
 	http.HandleFunc("/api/addTag", apiAddTag)
+	http.HandleFunc("/api/runScript", apiRunScript)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func staticSites(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadFile("index.html")
+	logFatal(err)
+	w.Write(b)
+}
+
+func apiRunScript(w http.ResponseWriter, r *http.Request) {
+	script := r.URL.Query().Get("script")
+	vm := otto.New()
+	v,err := vm.Run(script)
+	if err != nil{
+		log.Println(err)
+		return
+	}
+	val,_ := v.ToString()
+	b, err := json.Marshal(val)
 	logFatal(err)
 	w.Write(b)
 }
@@ -152,100 +166,19 @@ func crawl(urlStr string) *crawlbase.Page {
 	logFatal(err)
 	
 	page := crawlbase.Page{}
-	page.Hrefs = getHrefs(doc,baseUrl)
-	page.Forms = getFormUrls(doc,baseUrl)
-	page.Links = getLinks(doc,baseUrl)
+	page.Hrefs = crawlbase.GetHrefs(doc,baseUrl)
+	page.Forms = crawlbase.GetFormUrls(doc,baseUrl)
+	page.Links = crawlbase.GetLinks(doc,baseUrl)
 	
 	page.CrawlTime = int(time.Now().Unix())
 	page.Url = urlStr
 	page.RespCode = res.StatusCode
 	page.RespDuration = int(timeDur.Seconds() * 1000)
-	page.Uid = toSha256(urlStr)
+	page.Uid = crawlbase.ToSha256(urlStr)
 	page.Body = string(body)
 	return &page
 }
 
-func getLinks(doc *goquery.Document,baseUrl *url.URL)[]crawlbase.Link{
-	links := []crawlbase.Link{}
-	doc.Find("link").Each(func(i int, s *goquery.Selection) {
-		link := crawlbase.Link{}
-		href, exists := s.Attr("href")
-		if exists{
-			link.Url = href;
-		}
-		linkType, exists := s.Attr("type")
-		if exists{
-			link.Type = linkType;
-		}
-		links = append(links,link)
-	})
-	return links
-}
-
-func getHrefs(doc *goquery.Document,baseUrl *url.URL)[]string{
-	hrefs := []string{}
-	hrefsTest := map[string]bool{}
-	
-	doc.Find("a").Each(func(i int, s *goquery.Selection) {
-		href, exists := s.Attr("href")
-		if exists {
-			var fullUrl = toAbsUrl(baseUrl, href)
-			_, isAlreadyAdded := hrefsTest[fullUrl]
-			if !isAlreadyAdded {
-				hrefsTest[fullUrl] = true
-				hrefs = append(hrefs, fullUrl)
-			}
-		}
-	})
-	return hrefs
-}
-
-func getFormUrls(doc *goquery.Document,baseUrl *url.URL)[]crawlbase.Form{
-	forms := []crawlbase.Form{}
-	
-	doc.Find("form").Each(func(i int, s *goquery.Selection) {
-		form := crawlbase.Form{}
-		href, exists := s.Attr("action")
-		if exists{
-			form.Url = href;
-		}
-		method, exists := s.Attr("method")
-		if exists{
-			form.Method = method
-		}
-		form.Inputs = []crawlbase.FormInput{}
-		s.Find("input").Each(func(i int, s *goquery.Selection){
-			input := crawlbase.FormInput{}
-			name, exists := s.Attr("name")
-			if exists{
-				input.Name = name
-			}
-			value, exists := s.Attr("value")
-			if exists{
-				input.Value = value
-			}
-			form.Inputs = append(form.Inputs,input)
-		})
-		
-		forms = append(forms,form)
-	})
-	return forms
-}
-
-func toSha256(message string) string {
-	h := sha256.New()
-	h.Write([]byte(message))
-	return hex.EncodeToString(h.Sum(nil))
-}
-
-func toAbsUrl(baseurl *url.URL, weburl string) string {
-	relurl, err := url.Parse(weburl)
-	if err != nil {
-		return ""
-	}
-	absurl := baseurl.ResolveReference(relurl)
-	return absurl.String()
-}
 
 func logFatal(err error) {
 	if err != nil {
