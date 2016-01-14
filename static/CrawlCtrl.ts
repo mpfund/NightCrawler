@@ -73,7 +73,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
         }
 
         function crawl(url,k){
-            return $http.get('/api/crawl?url=' + encodeURIComponent(url))
+            return $http.get('/api/dcrawl?url=' + encodeURIComponent(url))
                 .then((resp)=>[resp,k]);
         }
 
