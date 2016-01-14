@@ -13,6 +13,7 @@ page.onInitialized = function () {
         	window.document.__writes.push(k);
         	window.document.__write(k);
         }
+        window.document.__writeln = document.writeln;
         window.document.writeln = function(k){
         	window.document.__writes.push(k);
         	window.document.__writeln(k);

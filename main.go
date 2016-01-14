@@ -158,7 +158,7 @@ func loadTagsFromFile() []htmlcheck.ValidTag {
 
 type PhJsPage struct {
 	Body     string
-	JSWrites []string
+	JSwrites []string
 }
 
 func crawlDynamic(urlStr string) *crawlbase.Page {
@@ -173,14 +173,19 @@ func crawlDynamic(urlStr string) *crawlbase.Page {
 	}
 	timeDur := time.Now().Sub(timeStart)
 
-	ioreader := bytes.NewReader(out.Bytes())
+	page := crawlbase.Page{}
+	PhJsPage := PhJsPage{}
+	err = json.Unmarshal(out.Bytes(),&PhJsPage)
+	logFatal(err)
+	page.Body = PhJsPage.Body
+
+	ioreader := bytes.NewReader([]byte(PhJsPage.Body))
 	doc, err := goquery.NewDocumentFromReader(ioreader)
 	logFatal(err)
 
 	baseUrl, err := url.Parse(urlStr)
 	logFatal(err)
 
-	page := crawlbase.Page{}
 	page.Hrefs = crawlbase.GetHrefs(doc, baseUrl)
 	page.Forms = crawlbase.GetFormUrls(doc, baseUrl)
 	page.Ressources = crawlbase.GetRessources(doc, baseUrl)
@@ -191,13 +196,10 @@ func crawlDynamic(urlStr string) *crawlbase.Page {
 	page.RespDuration = int(timeDur.Seconds() * 1000)
 	page.Uid = crawlbase.ToSha256(urlStr)
 	
-	PhJsPage := PhJsPage{}
-	err = json.Unmarshal(out.Bytes(),&PhJsPage)
-	logFatal(err)
-	page.Body = PhJsPage.Body
+	
 	
 	jsinfos := []crawlbase.JSInfo{}
-	for _,v:=range PhJsPage.JSWrites{
+	for _,v:=range PhJsPage.JSwrites{
 		info := crawlbase.JSInfo{"document.write",v}
 		jsinfos = append(jsinfos,info)
 	}
