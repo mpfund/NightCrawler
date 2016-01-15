@@ -27,6 +27,7 @@ func main() {
 		http.ServeFile(w, r, r.URL.Path[1:])
 	})
 	http.HandleFunc("/", staticSites)
+	http.HandleFunc("/test", testSite)
 	http.HandleFunc("/api/crawl", apiCrawlRequest)
 	http.HandleFunc("/api/dcrawl", apiDynamicCrawlRequest)
 	http.HandleFunc("/api/addTag", apiAddTag)
@@ -38,6 +39,12 @@ func staticSites(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadFile("index.html")
 	logFatal(err)
 	w.Write(b)
+}
+
+func testSite(w http.ResponseWriter, r *http.Request) {
+	inpage := r.URL.Query().Get("inpage")
+	
+	w.Write([]byte("<html>" + inpage+"</html>"))
 }
 
 func apiRunScript(w http.ResponseWriter, r *http.Request) {
@@ -159,6 +166,9 @@ func loadTagsFromFile() []htmlcheck.ValidTag {
 type PhJsPage struct {
 	Body     string
 	JSwrites []string
+	JSevals []string
+	JStimeouts []string
+	Cookies []crawlbase.Cookie
 }
 
 func crawlDynamic(urlStr string) *crawlbase.Page {
@@ -195,12 +205,19 @@ func crawlDynamic(urlStr string) *crawlbase.Page {
 	page.RespCode = 200
 	page.RespDuration = int(timeDur.Seconds() * 1000)
 	page.Uid = crawlbase.ToSha256(urlStr)
-	
-	
-	
+	page.Cookies = PhJsPage.Cookies;
+
 	jsinfos := []crawlbase.JSInfo{}
 	for _,v:=range PhJsPage.JSwrites{
 		info := crawlbase.JSInfo{"document.write",v}
+		jsinfos = append(jsinfos,info)
+	}
+	for _,v:=range PhJsPage.JSevals{
+		info := crawlbase.JSInfo{"eval",v}
+		jsinfos = append(jsinfos,info)
+	}
+	for _,v:=range PhJsPage.JStimeouts{
+		info := crawlbase.JSInfo{"setTimeout",v}
 		jsinfos = append(jsinfos,info)
 	}
 	

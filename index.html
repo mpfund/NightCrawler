@@ -131,7 +131,7 @@
                 </table>
             </div>
             <div class="col-md-6">
-                <iframe width="600" height="400" sandbox ng-src="{{iFrameData}}">
+                <iframe width="600" height="400" sandbox ng-src="">
 
                 </iframe>
                 <div class="" style="border:1px solid black;">
@@ -171,10 +171,10 @@
                         <td>{{k}}</td>
                         <td><input type="text" ng-model="queryParams.queries[k]"
                                    ng-change="updateUrlFromQuery(queryParams)"></td>
-                        <td>
+                        <!--<td>
                             <button ng-repeat="vec in scanner.scanVectorsArr"
                                     ng-click="updateQueryParams(queryParams,k,vec)">{{vec}}</button>
-                        </td>
+                        </td>-->
                     </tr>
                 </table>
                 <button ng-click="restoreQueryParams(queryParams,k)">restore values</button>
@@ -206,6 +206,24 @@
                     </textarea>
                 </div>
             </div>
+        </div>
+    </uib-tab>
+    <uib-tab>
+        <uib-tab-heading>
+            <i class="glyphicon glyphicon-bell"></i> Info
+        </uib-tab-heading>
+        <div class="row">
+           JSInfo<br>
+                <div ng-repeat="l in page.Page.JSInfo">
+                    <div>{{l.Source}}</div>
+                    <div>{{l.Value}}</div>
+                </div>
+                 Cookie
+                <div ng-repeat="l in page.Page.Cookies">
+                    <strong>Name</strong>{{l.Name}}<br>
+                    <strong>Value</strong>{{l.Value}}<br>
+                    <strong>Domain</strong>{{l.Domain}}
+                </div>
         </div>
     </uib-tab>
     <uib-tab>
