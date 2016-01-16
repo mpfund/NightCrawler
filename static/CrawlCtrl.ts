@@ -93,11 +93,11 @@ angular.module('crawlApp', ['ui.bootstrap'])
         }
 
         function checkDangerTags(htmlErrors,tags,attrs) {
-            var hasDanger = false;
-            for (var x = 0; x < htmlErrors.length; x++) {
-                var entry = htmlErrors[x];
-                var isDangerTag = tags.indexOf(entry.TagName)!=-1;
-                var isDangerAttribute = attrs.indexOf(entry.AttributeName)!=-1;
+            let hasDanger = false;
+            for (let x = 0; x < htmlErrors.length; x++) {
+                let entry = htmlErrors[x];
+                let isDangerTag = tags.indexOf(entry.TagName)!=-1;
+                let isDangerAttribute = attrs.indexOf(entry.AttributeName)!=-1;
                 entry.isDanger=isDangerTag||isDangerAttribute;
                 hasDanger = hasDanger|| entry.isDanger;
             }

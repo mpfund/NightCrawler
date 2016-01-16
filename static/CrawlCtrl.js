@@ -243,4 +243,3 @@ angular.module('crawlApp', ['ui.bootstrap'])
             $scope.filterText = filterText;
     }
 });
-//# sourceMappingURL=CrawlCtrl.js.map
