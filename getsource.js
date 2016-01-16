@@ -2,10 +2,11 @@ var system = require('system');
 var args = system.args;
 var page = require('webpage').create();
 
-/*
+
 page.onConsoleMessage = function (msg) {
-    console.log('From Page Console: '+msg);
-};*/
+    //console.log('From Page Console: '+msg);
+};
+
 page.onInitialized = function () {
     page.evaluate(function () {
         window.document.__write = document.write;
@@ -35,17 +36,18 @@ page.onInitialized = function () {
     });
 };
 
-function totext(k){
-    if(k===null)
-        return null;
-    return k.toString();
-}
+
 page.onError = function(){}
 
 page.open(args[1], function(status) {
-	var writes = page.evaluate(function(){
-		return window.document.__writes;
-	})
+    setTimeout(function(){report(status)},1000)
+});
+
+
+function report(status){
+    var writes = page.evaluate(function(){
+        return window.document.__writes;
+    })
     var evals = page.evaluate(function(){
         return window.__evals;
     })
@@ -54,9 +56,18 @@ page.open(args[1], function(status) {
     })
 
     if(status=='success'){
-  var ret = {Body:page.content,'JSwrites':writes,
-  'JSevals':evals,'JStimeouts':[],'Cookies':page.cookies};
-  console.log(JSON.stringify(ret));
-}else{console.log({Body:'error','JSwrites':[]})}
+    var ret = {Body:page.content,'JSwrites':writes,
+    'JSevals':evals,'JStimeouts':[],'Cookies':page.cookies};
+    console.log(JSON.stringify(ret));
+  }else{
+    console.log(JSON.stringify({Body:'error','JSwrites':[]}))
+  }
+
   phantom.exit();
-});
+}
+
+function totext(k){
+    if(k===null)
+        return null;
+    return k.toString();
+}
