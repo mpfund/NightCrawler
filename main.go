@@ -43,8 +43,10 @@ func staticSites(w http.ResponseWriter, r *http.Request) {
 
 func testSite(w http.ResponseWriter, r *http.Request) {
 	inpage := r.URL.Query().Get("inpage")
+	inscript := r.URL.Query().Get("inscript")
 	
-	w.Write([]byte("<html>" + inpage+"</html>"))
+	w.Write([]byte("<html>" + inpage+"<script>var m = "+inscript+
+		";document.write(m);document.cookie='test='+m</script></html>"))
 }
 
 func apiRunScript(w http.ResponseWriter, r *http.Request) {
