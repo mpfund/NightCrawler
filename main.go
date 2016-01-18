@@ -45,8 +45,8 @@ func testSite(w http.ResponseWriter, r *http.Request) {
 	inpage := r.URL.Query().Get("inpage")
 	inscript := r.URL.Query().Get("inscript")
 	
-	w.Write([]byte("<html>" + inpage+"<script>var m = "+inscript+
-		";document.write(m);document.cookie='test='+m</script></html>"))
+	w.Write([]byte("<html>" + inpage+"<script>var m = '"+inscript+
+		"';document.write(m);document.cookie='test='+m</script></html>"))
 }
 
 func apiRunScript(w http.ResponseWriter, r *http.Request) {
@@ -171,6 +171,7 @@ type PhJsPage struct {
 	JSevals []string
 	JStimeouts []string
 	Cookies []crawlbase.Cookie
+	Requests []string
 }
 
 func crawlDynamic(urlStr string) *crawlbase.Page {
@@ -221,6 +222,10 @@ func crawlDynamic(urlStr string) *crawlbase.Page {
 	for _,v:=range PhJsPage.JStimeouts{
 		info := crawlbase.JSInfo{"setTimeout",v}
 		jsinfos = append(jsinfos,info)
+	}
+	for _,v:=range PhJsPage.Requests{
+		info := crawlbase.Ressource{v,"","",""}
+		page.Ressources = append(page.Ressources,info)
 	}
 	
 	page.JSInfo = jsinfos
