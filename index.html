@@ -150,6 +150,10 @@
                 <div ng-repeat="l in page.Page.Hrefs">
                     <a href="{{l}}" target="_blank">{{l}}</a><button ng-click="setUrl(l);crawlPage();">c</button>
                 </div>
+                Ressources
+                 <div ng-repeat="l in page.Page.Ressources">
+                    <a href="{{l.Url}}" target="_blank">{{l.Tag}}: {{l.Url}}</a><button ng-click="setUrl(l.Url);crawlPage();">c</button>
+                </div>
             </div>
         </div>
         </uib-tab>
