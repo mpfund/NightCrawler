@@ -175,8 +175,10 @@
                 <table>
                     <tr ng-repeat="(k,v) in queryParams.queries">
                         <td>{{k}}</td>
-                        <td><input type="text" ng-model="queryParams.queries[k]"
-                        ng-change="updateUrlFromQuery(queryParams)"></td>
+                        <td>
+                            <input type="text" ng-model="queryParams.queries[k]"
+                                ng-change="updateUrlFromQuery(queryParams)"/>
+                        </td>
                         <!--<td>
                             <button ng-repeat="vec in scanner.scanVectorsArr"
                             ng-click="updateQueryParams(queryParams,k,vec)">{{vec}}</button>
@@ -186,22 +188,21 @@
                 <button ng-click="restoreQueryParams(queryParams,k)">restore values</button>
                 <button ng-click="addToScan(queryParams)">Add Url Scan</button>
                 <button ng-click="generateScanAllParams(queryParams)">Gen Scan</button>
+                <button ng-click="crawlScanList()">Crawl all</button>
+                <button ng-click="clearScanList()">Clear</button>
                 <ul>
                     <li ng-repeat="scan in scans track by $index">
                         {{scan.baseUrl}}
-                        <span ng-repeat="(k,v) in scan.queries" class="bg-info" style="margin:3px;">
+                        <span ng-repeat="(k,v) in scan.queries" class="bg-info"
+                        style="margin:3px;" ng-class="{'hasValidationError':scan.resp.hasDanger}">
                             {{k}}={{v}}
                         </span>
                         <span>
-                            {{scan.resp.HtmlErrors.length}}
-                        </span>
-                        <span>
-                            {{scan.resp.hasDanger}}
+                            {{scan.resp.HtmlErrors.length}}({{scan.resp.hasDanger}})
                         </span>
                     </li>
                 </ul>
-                <button ng-click="crawlScanList()">Crawl all</button>
-                <button ng-click="clearScanList()">Clear</button>
+               
             </div>
             <div class="col-xs-6">
                 <div>

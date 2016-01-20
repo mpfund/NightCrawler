@@ -160,7 +160,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
             for (let x = 0; x < jsInfos.length; x++) {
                 let entry = jsInfos[x];
                 for(let y=0;y<dangerValues.length;y++){
-                    if(entry.Value.indexOf(dangerValues[y])>-1)
+                    if(entry.Value.indexOf('<'+dangerValues[y])>-1)
                         return true;
                 }
             }
@@ -171,7 +171,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
             for (let x = 0; x < cookies.length; x++) {
                 let entry = cookies[x];
                 for(let y=0;y<dangerValues.length;y++){
-                    if(entry.Value.indexOf(dangerValues[y])>-1)
+                    if(entry.Value.indexOf('<'+dangerValues[y])>-1)
                         return true;
                 }
             }

@@ -97,7 +97,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
         for (var x = 0; x < jsInfos.length; x++) {
             var entry = jsInfos[x];
             for (var y = 0; y < dangerValues.length; y++) {
-                if (entry.Value.indexOf(dangerValues[y]) > -1)
+                if (entry.Value.indexOf('<' + dangerValues[y]) > -1)
                     return true;
             }
         }
@@ -107,7 +107,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
         for (var x = 0; x < cookies.length; x++) {
             var entry = cookies[x];
             for (var y = 0; y < dangerValues.length; y++) {
-                if (entry.Value.indexOf(dangerValues[y]) > -1)
+                if (entry.Value.indexOf('<' + dangerValues[y]) > -1)
                     return true;
             }
         }
@@ -266,4 +266,3 @@ angular.module('crawlApp', ['ui.bootstrap'])
             $scope.filterText = filterText;
     }
 });
-//# sourceMappingURL=CrawlCtrl.js.map

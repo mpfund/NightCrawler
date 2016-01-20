@@ -2,11 +2,13 @@ var system = require('system');
 var args = system.args;
 var page = require('webpage').create();
 
-var requests = []
+
 page.onConsoleMessage = function (msg) {
     //console.log('From Page Console: '+msg);
 };
 
+
+var requests = [];
 page.onResourceRequested = function(requestData, networkRequest) {
   requests.push(requestData.url)
 };
@@ -61,7 +63,9 @@ function report(status){
 
     if(status=='success'){
     var ret = {Body:page.content,'JSwrites':writes,
-    'JSevals':evals,'JStimeouts':[],'Cookies':page.cookies,Requests:requests};
+    'JSevals':evals,'JStimeouts':[],'Cookies':page.cookies,
+    Requests:requests
+   };
 
     console.log(JSON.stringify(ret));
   }else{
