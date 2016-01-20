@@ -225,7 +225,7 @@ func crawlDynamic(urlStr string) *crawlbase.Page {
 	}
 	for _,v:=range PhJsPage.Requests{
 		info := crawlbase.Ressource{v,"","",""}
-		page.Ressources = append(page.Ressources,info)
+		page.Requests = append(page.Requests,info)
 	}
 	
 	page.JSInfo = jsinfos

@@ -80,7 +80,7 @@
         <uib-tabset style="margin-top:40px;">
         <uib-tab >
         <uib-tab-heading>
-        <i class="glyphicon glyphicon-bell"></i> Request
+        <i class="glyphicon glyphicon-bell"></i> Crawl Request
         </uib-tab-heading>
         <div class="row">
             
@@ -148,11 +148,20 @@
         <div class="row">
             <div class="col-xs-12">
                 <div ng-repeat="l in page.Page.Hrefs">
-                    <a href="{{l}}" target="_blank">{{l}}</a><button ng-click="setUrl(l);crawlPage();">c</button>
+                    <a href="{{l}}" target="_blank">{{l}}</a> <button ng-click="setUrl(l);crawlPage();">c</button>
                 </div>
-                Ressources
-                 <div ng-repeat="l in page.Page.Ressources">
-                    <a href="{{l.Url}}" target="_blank">{{l.Tag}}: {{l.Url}}</a><button ng-click="setUrl(l.Url);crawlPage();">c</button>
+            </div>
+        </div>
+        </uib-tab>
+         <uib-tab>
+        <uib-tab-heading>
+        <i class="glyphicon glyphicon-bell"></i> Requests
+        </uib-tab-heading>
+        <div class="row">
+            <div class="col-xs-12">
+                 <div ng-repeat="l in page.Page.Requests">
+                    {{l.Tag}}:<a href="{{l.Url}}" target="_blank">{{l.Url}}</a>
+                    <button ng-click="setUrl(l.Url);crawlPage();">c</button>
                 </div>
             </div>
         </div>
@@ -204,7 +213,7 @@
         </div>
         </uib-tab>
         <uib-tab>
-        <uib-tab-heading>
+        <uib-tab-heading  ng-class="{'hasValidationError':JSInfoPanel.hasDanger}">
         <i class="glyphicon glyphicon-bell"></i> Response Info
         </uib-tab-heading>
         <div class="row">

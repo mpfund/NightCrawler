@@ -1,7 +1,56 @@
 /// <reference path="./TypeFiles/angular.d.ts"/>
+
+
+interface IPage {
+    Url          :string
+    CrawlTime    :number
+    Hrefs        :string[]
+    Forms        :any[]
+    Ressources    :IRessource[]
+    RespCode     :number
+    RespDuration :number
+    CrawlerId    :number
+    Uid          :string
+    Body         :string
+    JSInfo    :IJSInfo[]
+    Cookies    :ICookie[]
+    Requests    :IRessource[]
+}
+
+    interface IFormInput{
+        Name:string
+        Type : string
+        Value :string
+    }
+
+    interface IForm {
+        Url    :string
+        Method :string
+        Inputs :IFormInput[]
+    }
+
+    interface ICookie{
+        Name    :string
+        Value    :string
+        Domain :string
+        Httponly :boolean
+    }
+
+    interface IRessource{
+        Url  :string
+        Type :string
+        Rel  :string
+        Tag    :string
+    }
+
+    interface IJSInfo{
+        Source    :string
+        Value    :string
+    }
+
 angular.module('crawlApp', ['ui.bootstrap'])
     .controller('CrawlCtrl', function ($scope, $http, $sce) {
-        $scope.page = null;
+        $scope.page = <IPage> null;
         $scope.htmlErrors = [];
 
         $scope.showErrorTab = true;
@@ -90,6 +139,9 @@ angular.module('crawlApp', ['ui.bootstrap'])
             var tags = hvr.dangerTags.split(',');
             var attrs = hvr.dangerAttributes.split(',');
             hvr.hasDanger = checkDangerTags(arr,tags,attrs);
+            var dangerJSInfo = checkDangerRequestInfo($scope.page.Page.JSInfo,tags);
+            var dangerCookies = checkDangerCookies($scope.page.Page.Cookies,tags);
+            $scope.JSInfoPanel = {hasDanger:dangerJSInfo||dangerCookies};
         }
 
         function checkDangerTags(htmlErrors,tags,attrs) {
@@ -102,6 +154,28 @@ angular.module('crawlApp', ['ui.bootstrap'])
                 hasDanger = hasDanger|| entry.isDanger;
             }
             return hasDanger;
+        }
+
+        function checkDangerRequestInfo(jsInfos:IJSInfo[],dangerValues:string[]) {
+            for (let x = 0; x < jsInfos.length; x++) {
+                let entry = jsInfos[x];
+                for(let y=0;y<dangerValues.length;y++){
+                    if(entry.Value.indexOf(dangerValues[y])>-1)
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        function checkDangerCookies(cookies:ICookie[],dangerValues:string[]) {
+            for (let x = 0; x < cookies.length; x++) {
+                let entry = cookies[x];
+                for(let y=0;y<dangerValues.length;y++){
+                    if(entry.Value.indexOf(dangerValues[y])>-1)
+                        return true;
+                }
+            }
+            return false;
         }
 
         $scope.queryParams = {queries: {}, order: [], baseUrl: ''};

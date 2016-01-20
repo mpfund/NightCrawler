@@ -78,6 +78,9 @@ angular.module('crawlApp', ['ui.bootstrap'])
         var tags = hvr.dangerTags.split(',');
         var attrs = hvr.dangerAttributes.split(',');
         hvr.hasDanger = checkDangerTags(arr, tags, attrs);
+        var dangerJSInfo = checkDangerRequestInfo($scope.page.Page.JSInfo, tags);
+        var dangerCookies = checkDangerCookies($scope.page.Page.Cookies, tags);
+        $scope.JSInfoPanel = { hasDanger: dangerJSInfo || dangerCookies };
     }
     function checkDangerTags(htmlErrors, tags, attrs) {
         var hasDanger = false;
@@ -89,6 +92,26 @@ angular.module('crawlApp', ['ui.bootstrap'])
             hasDanger = hasDanger || entry.isDanger;
         }
         return hasDanger;
+    }
+    function checkDangerRequestInfo(jsInfos, dangerValues) {
+        for (var x = 0; x < jsInfos.length; x++) {
+            var entry = jsInfos[x];
+            for (var y = 0; y < dangerValues.length; y++) {
+                if (entry.Value.indexOf(dangerValues[y]) > -1)
+                    return true;
+            }
+        }
+        return false;
+    }
+    function checkDangerCookies(cookies, dangerValues) {
+        for (var x = 0; x < cookies.length; x++) {
+            var entry = cookies[x];
+            for (var y = 0; y < dangerValues.length; y++) {
+                if (entry.Value.indexOf(dangerValues[y]) > -1)
+                    return true;
+            }
+        }
+        return false;
     }
     $scope.queryParams = { queries: {}, order: [], baseUrl: '' };
     function setIFrame(data) {
@@ -243,3 +266,4 @@ angular.module('crawlApp', ['ui.bootstrap'])
             $scope.filterText = filterText;
     }
 });
+//# sourceMappingURL=CrawlCtrl.js.map
