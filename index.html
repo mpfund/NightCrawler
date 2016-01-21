@@ -1,265 +1,324 @@
 <!DOCTYPE html>
 <html ng-app="crawlApp">
-    <head>
-        <title>sdf</title>
-        <link rel="stylesheet" href="./static/bootstrap-3.3.6-dist/css/bootstrap.min.css">
-        <style>
+<head>
+    <title>Crawler</title>
+    <link rel="stylesheet" href="./static/bootstrap-3.3.6-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./static/css/font-awesome.min.css">
+    <style>
         .margin-20 {
-        margin: 20px;
+            margin: 20px;
         }
+
+        .margin-10 {
+            margin: 20px;
+        }
+
+        table tr:hover{
+            background-color:lightgray;
+        }
+
+
         .error-reason-text {
-        padding: 4px;
+            padding: 4px;
         }
-        .hasValidationError{
-        background-color: #ff000a;
+
+        .hasValidationError {
+            background-color: #ff000a;
         }
+
         #htmlErrors div {
-        margin: 4px;
+            margin: 4px;
         }
+
         .nav-tabs > li > div {
-        margin-right: 2px;
-        line-height: 1.42857143;
-        border: 1px solid transparent;
-        border-radius: 4px 4px 0 0;
+            margin-right: 2px;
+            line-height: 1.42857143;
+            border: 1px solid transparent;
+            border-radius: 4px 4px 0 0;
         }
-        .nav-tabs > li > div:hover {
-        border-color: #eee #eee #ddd;
-        }
+
+            .nav-tabs > li > div:hover {
+                border-color: #eee #eee #ddd;
+            }
+
         .nav-tabs > li.active > div, .nav-tabs > li.active > div:hover {
-        color: #555;
-        cursor: default;
-        background-color: #f8f8f8;
-        border: 1px solid #ddd;
-        border-bottom-color: transparent;
+            color: #555;
+            cursor: default;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-bottom-color: transparent;
         }
+
         .nav > li > div {
-        position: relative;
-        display: block;
-        padding: 10px 15px;
+            position: relative;
+            display: block;
+            padding: 10px 15px;
         }
-        .nav > li > div:hover {
-        background-color: #eee;
-        }
+
+            .nav > li > div:hover {
+                background-color: #eee;
+            }
+
         .uib-tab > div {
-        color: #337ab7;
-        cursor: pointer;
+            color: #337ab7;
+            cursor: pointer;
         }
+
         .nav-tabs > li.disabled > div {
-        color: #999;
+            color: #999;
         }
-        .nav-tabs > li.disabled > div:hover, .nav-tabs > li.disabled > div:focus {
-        color: #999;
-        text-decoration: none;
-        background-color: transparent;
-        cursor: not-allowed;
-        }
+
+            .nav-tabs > li.disabled > div:hover, .nav-tabs > li.disabled > div:focus {
+                color: #999;
+                text-decoration: none;
+                background-color: transparent;
+                cursor: not-allowed;
+            }
+
         form.tab-form-demo .tab-pane {
-        margin: 20px 20px;
+            margin: 20px 20px;
         }
-        </style>
-        <script src="./static/angular.min.js"></script>
-        <script src="./static/CrawlCtrl.js"></script>
-        <script src="./static/ui-bootstrap-tpls-1.0.0.min.js"></script>
-    </head>
-    <body class="margin-20" ng-controller="CrawlCtrl">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="inputUrl">URL</label>
-                    <input name="url" type="text" class="form-control" id="inputUrl"
-                    value="http://google.com" ng-model="inputUrl"
-                    placeholder="enter a url like http://google.com">
-                </div>
-                <div class="form-group">
-                    <input type="checkbox" id="encodeUrl" ng-model="encodeUrl"/>EncodeUrl
-                </div>
-                <button id="btnSubmit" type="button" class="btn btn-default" ng-click="crawlPage()">Crawl</button>
-                <span style="margin-right: 30px;">{{statusText}}</span>
+    </style>
+    <script src="./static/angular.min.js"></script>
+    <script src="./static/CrawlCtrl.js"></script>
+    <script src="./static/ui-bootstrap-tpls-1.0.0.min.js"></script>
+</head>
+<body class="margin-20" ng-controller="CrawlCtrl">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="inputUrl">URL</label>
+                <input name="url" type="text" class="form-control" id="inputUrl"
+                       value="http://google.com" ng-model="inputUrl"
+                       placeholder="enter a url like http://google.com">
             </div>
+            <div class="form-group">
+                <input type="checkbox" id="encodeUrl" ng-model="encodeUrl" />EncodeUrl
+            </div>
+            <button id="btnSubmit" type="button" class="btn btn-default" ng-click="crawlPage()">
+                <i class="fa fa-search"></i>
+            </button>
+            <span style="margin-right: 30px;">{{statusText}}</span>
         </div>
-        <uib-tabset style="margin-top:40px;">
-        <uib-tab >
-        <uib-tab-heading>
-        <i class="glyphicon glyphicon-bell"></i> Crawl Request
-        </uib-tab-heading>
-        <div class="row">
-            
-        </div>
+    </div>
+    <uib-tabset style="margin-top:40px;">
+        <uib-tab>
+            <uib-tab-heading>
+                <i class="glyphicon glyphicon-bell"></i> Crawl Request
+            </uib-tab-heading>
+            <div class="row">
+
+            </div>
         </uib-tab>
 
         <uib-tab>
-        <uib-tab-heading ng-class="{'hasValidationError':htmlValidator.hasDanger}">
-        <i class="glyphicon glyphicon-bell"></i>
-        <span>HtmlErrors ({{htmlErrors.length}})</span>
-        </uib-tab-heading>
-        <div class="row">
-            <div class="col-xs-12">
-                Filter: <input type="text" ng-model="filterText">
-                <br>
+            <uib-tab-heading ng-class="{'hasValidationError':htmlValidator.hasDanger}">
+                <i class="glyphicon glyphicon-bell"></i>
+                <span>HtmlErrors ({{htmlErrors.length}})</span>
+            </uib-tab-heading>
+            <div class="row">
+                <div class="col-xs-12">
+                    Filter: <input type="text" ng-model="filterText">
+                    <br>
+                </div>
+                <div class="col-md-6">
+                    <table>
+                        <tr>
+                            <th>Error</th>
+                            <th>Tag</th>
+                            <th>Attribute</th>
+                            <th>Position</th>
+                        </tr>
+                        <tbody>
+                            <tr ng-repeat="e in htmlErrors" ng-class="{'hasValidationError':e.isDanger}">
+                                <td>
+                                    <span class="bg-info error-reason-text">{{e.reasonText}}</span>
+                                </td>
+                                <td class="cellTagName">
+                                    <strong class="tag-name">{{e.TagName}}</strong>
+                                </td>
+                                <td class="cellAttrName">
+                                    {{e.AttributeName}}
+                                </td>
+                                <td>
+                                    {{e.TextPos.Line}}:{{e.TextPos.Column}}
+                                </td>
+                                <td>
+                                    <input class="btn btn-sm" type="button" value="add tag/attribute" ng-click="addTag(e)">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <div class="" style="border:1px solid black;">
+                        <h4>Scanner Settings</h4>
+                        <div class="form-group">
+                            <label>Highlight Tags</label>
+                            <input type="text" ng-model="htmlValidator.dangerTags">
+                        </div>
+                        <div class="form-group">
+                            <label>Highlight Attributes</label>
+                            <input type="text" ng-model="htmlValidator.dangerAttributes">
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6">
-                <table>
-                    <tr>
-                        <th>Error</th>
-                        <th>Tag</th>
-                        <th>Attribute</th>
-                        <th>Position</th>
-                    </tr>
-                    <tbody>
-                        <tr ng-repeat="e in htmlErrors" ng-class="{'hasValidationError':e.isDanger}">
-                            <td>
-                                <span class="bg-info error-reason-text">{{e.reasonText}}</span>
+        </uib-tab>
+        <uib-tab>
+            <uib-tab-heading>
+                <i class="glyphicon glyphicon-bell"></i> Links ({{page.Page.Hrefs.length}})
+            </uib-tab-heading>
+            <div class="row">
+                <div class="col-xs-12">
+                    <table style="width:100%;table-layout:fixed;">
+                        <tr ng-repeat="l in page.Page.Hrefs">
+                            <td style="width:95%;word-wrap: break-word;">
+                                <a href="{{l}}" target="_blank">{{l}}</a>
                             </td>
-                            <td class="cellTagName">
-                                <strong class="tag-name">{{e.TagName}}</strong>
-                            </td>
-                            <td class="cellAttrName">
-                                {{e.AttributeName}}
-                            </td>
-                            <td>
-                                {{e.TextPos.Line}}:{{e.TextPos.Column}}
-                            </td>
-                            <td>
-                                <input class="btn btn-sm" type="button" value="add tag/attribute" ng-click="addTag(e)">
+                            <td style="width:90px;">
+                                <button class="btn btn-default" ng-click="setUrl(l);crawlPage();">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                                <button class="btn btn-default" ng-click="clearScanList();generateScanAllParams(queryParams);crawlScanList();">
+                                    <i class="fa fa-cube"></i>
+                                </button>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
+                    </table>
+                </div>
             </div>
-            <div class="col-md-6">
-                <div class="" style="border:1px solid black;">
-                    <h4>Scanner Settings</h4>
-                    <div class="form-group">
-                        <label>Highlight Tags</label>
-                        <input type="text" ng-model="htmlValidator.dangerTags">
+        </uib-tab>
+        <uib-tab>
+            <uib-tab-heading>
+                <i class="glyphicon glyphicon-bell"></i> Requests ({{page.Page.Requests.length}})
+            </uib-tab-heading>
+            <div class="row">
+                <div class="col-xs-12">
+                    <table style="width:100%;table-layout:fixed;">
+                        <tr ng-repeat="l in page.Page.Requests">
+                            <td style="width:95%;word-wrap: break-word;">
+                                <a href="{{l.Url}}" target="_blank">{{l.Url}}</a>
+                            </td>
+                            <td style="width:5%;">
+                                <button class="btn btn-default" ng-click="setUrl(l.Url);crawlPage();">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </uib-tab>
+        <uib-tab>
+            <uib-tab-heading>
+                <i class="glyphicon glyphicon-bell"></i> Scanner
+            </uib-tab-heading>
+            <div class="row">
+                <div class="col-xs-6">
+                    <table class="margin-10">
+                        <tr ng-repeat="(k,v) in queryParams.queries">
+                            <td style="padding-right:5px;"><label>{{k}}</label></td>
+                            <td>
+                                <input class="form-control" type="text" ng-model="queryParams.queries[k]"
+                                       ng-change="updateUrlFromQuery(queryParams)" />
+                            </td>
+                            <!--<td>
+                                <button ng-repeat="vec in scanner.scanVectorsArr"
+                                ng-click="updateQueryParams(queryParams,k,vec)">{{vec}}</button>
+                            </td>-->
+                        </tr>
+                    </table>
+                    <button class="btn btn-default" ng-click="addToScan(queryParams)">Add Url Scan</button>
+                    <button class="btn btn-default" ng-click="generateScanAllParams(queryParams)">Gen Scan</button>
+                    <button class="btn btn-default" ng-click="crawlScanList()"><i class="fa fa-cube"></i> Crawl All</button>
+                    <button class="btn btn-default" ng-click="clearScanList()">Clear</button>
+
+
+                    <table style="table-layout:fixed;width:100%;">
+                        <tr ng-repeat="scan in scans track by $index">
+                            <td>
+                                {{scan.baseUrl}}
+                            </td>
+                            <td>
+                                <span ng-repeat="(k,v) in scan.queries" class="bg-info"
+                                      style="margin:3px;" ng-class="{'hasValidationError':scan.resp.hasDanger}">
+                                    {{k}}={{v}}
+                                </span>
+                                <span>
+                                    {{scan.resp.HtmlErrors.length}}({{scan.resp.hasDanger}})
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-default" ng-click="setUrl(scan.fullurl);crawlPage();">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-xs-6">
+                    <div>
+                        <h4>Scanner Settings</h4>
+                        <textarea ng-model="scanner.scanVectors" rows="10"></textarea>
                     </div>
-                    <div class="form-group">
-                        <label>Highlight Attributes</label>
-                        <input type="text" ng-model="htmlValidator.dangerAttributes">
-                    </div>
                 </div>
             </div>
-        </div>
         </uib-tab>
         <uib-tab>
-        <uib-tab-heading>
-        <i class="glyphicon glyphicon-bell"></i> Links
-        </uib-tab-heading>
-        <div class="row">
-            <div class="col-xs-12">
-                <div ng-repeat="l in page.Page.Hrefs">
-                    <a href="{{l}}" target="_blank">{{l}}</a> <button ng-click="setUrl(l);crawlPage();">c</button>
+            <uib-tab-heading ng-class="{'hasValidationError':JSInfoPanel.hasDanger}">
+                <i class="glyphicon glyphicon-bell"></i> Response Info
+            </uib-tab-heading>
+            <div class="row">
+                <div class="col-xs-12">
+                    JSInfo:<br>
+                    <table style="table-layout:fixed;width:100%;">
+                        <tr>
+                            <th>Source</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr ng-repeat="l in page.Page.JSInfo">
+                            <td>{{l.Source}}</td>
+                            <td style="word-wrap:break-word;">{{l.Value}}</td>
+                        </tr>
+                    </table>
+                    Cookie:<br>
+                    <table style="table-layout:fixed;width:100%;">
+                        <tr>
+                            <th>Name</th>
+                            <th>Value</th>
+                            <th>Domain</th>
+                        </tr>
+                        <tr ng-repeat="l in page.Page.Cookies">
+                            <td style="width:20%;">{{l.Name}}</td>
+                            <td style="word-wrap:break-word;width:70%;">{{l.Value}}</td>
+                            <td style="width:10%;">{{l.Domain}}</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
-        </div>
-        </uib-tab>
-         <uib-tab>
-        <uib-tab-heading>
-        <i class="glyphicon glyphicon-bell"></i> Requests
-        </uib-tab-heading>
-        <div class="row">
-            <div class="col-xs-12">
-                 <div ng-repeat="l in page.Page.Requests">
-                    {{l.Tag}}:<a href="{{l.Url}}" target="_blank">{{l.Url}}</a>
-                    <button ng-click="setUrl(l.Url);crawlPage();">c</button>
-                </div>
-            </div>
-        </div>
         </uib-tab>
         <uib-tab>
-        <uib-tab-heading>
-        <i class="glyphicon glyphicon-bell"></i> Scanner
-        </uib-tab-heading>
-        <div class="row">
-            <div class="col-xs-6">
-                <table>
-                    <tr ng-repeat="(k,v) in queryParams.queries">
-                        <td>{{k}}</td>
-                        <td>
-                            <input type="text" ng-model="queryParams.queries[k]"
-                                ng-change="updateUrlFromQuery(queryParams)"/>
-                        </td>
-                        <!--<td>
-                            <button ng-repeat="vec in scanner.scanVectorsArr"
-                            ng-click="updateQueryParams(queryParams,k,vec)">{{vec}}</button>
-                        </td>-->
-                    </tr>
-                </table>
-                <button ng-click="restoreQueryParams(queryParams,k)">restore values</button>
-                <button ng-click="addToScan(queryParams)">Add Url Scan</button>
-                <button ng-click="generateScanAllParams(queryParams)">Gen Scan</button>
-                <button ng-click="crawlScanList()">Crawl all</button>
-                <button ng-click="clearScanList()">Clear</button>
-                <ul>
-                    <li ng-repeat="scan in scans track by $index">
-                        {{scan.baseUrl}}
-                        <span ng-repeat="(k,v) in scan.queries" class="bg-info"
-                        style="margin:3px;" ng-class="{'hasValidationError':scan.resp.hasDanger}">
-                            {{k}}={{v}}
-                        </span>
-                        <span>
-                            {{scan.resp.HtmlErrors.length}}({{scan.resp.hasDanger}})
-                        </span>
-                    </li>
-                </ul>
-               
+            <uib-tab-heading>
+                <i class="glyphicon glyphicon-bell"></i> Scripting
+            </uib-tab-heading>
+            <div class="row">
+                <textarea id="userScript" cols="80" rows="20">
+                    function run(){
+                    }
+                </textarea>
             </div>
-            <div class="col-xs-6">
-                <div>
-                    <h4>Scanner Settings</h4>
-                    <textarea ng-model="scanner.scanVectors" rows="10">
-                    </textarea>
-                </div>
-            </div>
-        </div>
-        </uib-tab>
-        <uib-tab>
-        <uib-tab-heading  ng-class="{'hasValidationError':JSInfoPanel.hasDanger}">
-        <i class="glyphicon glyphicon-bell"></i> Response Info
-        </uib-tab-heading>
-        <div class="row">
-            JSInfo:<br>
-            <div ng-repeat="l in page.Page.JSInfo">
-                <div>{{l.Source}}</div>
-                <div>{{l.Value}}</div>
-            </div>
-            Cookie:<br>
-            <table>
-                <tr>
-                    <th>Name</th>
-                    <th>Value</th>
-                    <th>Domain</th>
-                </tr>
-                <tr ng-repeat="l in page.Page.Cookies">
-                    <td>{{l.Name}}</td>
-                    <td>{{l.Value}}</td>
-                    <td>{{l.Domain}}</td>
-                </tr>
-            </table>
-        </div>
-        </uib-tab>
-        <uib-tab>
-        <uib-tab-heading>
-        <i class="glyphicon glyphicon-bell"></i> Scripting
-        </uib-tab-heading>
-        <div class="row">
-            <textarea id="userScript" cols="80" rows="20">
-            function run(){
-            }
-            </textarea>
-        </div>
         </uib-tab>
         <uib-tab active="tabPreviewVisible">
-        <uib-tab-heading>
-        <i class="glyphicon glyphicon-bell"></i> Preview
-        </uib-tab-heading>
-        <div class="row" ng-if="tabPreviewVisible">
-            <iframe width="600" height="400" sandbox ng-src="{{iFrameData}}">
-            </iframe>
-        </div>
+            <uib-tab-heading>
+                <i class="glyphicon glyphicon-bell"></i> Preview
+            </uib-tab-heading>
+            <div class="row" ng-if="tabPreviewVisible">
+                <iframe width="600" height="400" sandbox ng-src="{{iFrameData}}"></iframe>
+            </div>
         </uib-tab>
-        </uib-tabset>
-        <div ng-show="statusText.length>0"
+    </uib-tabset>
+    <div ng-show="statusText.length>0"
          style="position:fixed;bottom:15px;left:20px;width:200px;height:20px;background-color:yellow;">Loading...</div>
-    </body>
+</body>
 </html>

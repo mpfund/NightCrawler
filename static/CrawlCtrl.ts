@@ -2,55 +2,55 @@
 
 
 interface IPage {
-    Url          :string
-    CrawlTime    :number
-    Hrefs        :string[]
-    Forms        :any[]
-    Ressources    :IRessource[]
-    RespCode     :number
-    RespDuration :number
-    CrawlerId    :number
-    Uid          :string
-    Body         :string
-    JSInfo    :IJSInfo[]
-    Cookies    :ICookie[]
-    Requests    :IRessource[]
+    Url: string
+    CrawlTime: number
+    Hrefs: string[]
+    Forms: any[]
+    Ressources: IRessource[]
+    RespCode: number
+    RespDuration: number
+    CrawlerId: number
+    Uid: string
+    Body: string
+    JSInfo: IJSInfo[]
+    Cookies: ICookie[]
+    Requests: IRessource[]
 }
 
-    interface IFormInput{
-        Name:string
-        Type : string
-        Value :string
-    }
+interface IFormInput {
+    Name: string
+    Type: string
+    Value: string
+}
 
-    interface IForm {
-        Url    :string
-        Method :string
-        Inputs :IFormInput[]
-    }
+interface IForm {
+    Url: string
+    Method: string
+    Inputs: IFormInput[]
+}
 
-    interface ICookie{
-        Name    :string
-        Value    :string
-        Domain :string
-        Httponly :boolean
-    }
+interface ICookie {
+    Name: string
+    Value: string
+    Domain: string
+    Httponly: boolean
+}
 
-    interface IRessource{
-        Url  :string
-        Type :string
-        Rel  :string
-        Tag    :string
-    }
+interface IRessource {
+    Url: string
+    Type: string
+    Rel: string
+    Tag: string
+}
 
-    interface IJSInfo{
-        Source    :string
-        Value    :string
-    }
+interface IJSInfo {
+    Source: string
+    Value: string
+}
 
 angular.module('crawlApp', ['ui.bootstrap'])
     .controller('CrawlCtrl', function ($scope, $http, $sce) {
-        $scope.page = <IPage> null;
+        $scope.page = <IPage>null;
         $scope.htmlErrors = [];
 
         $scope.showErrorTab = true;
@@ -78,7 +78,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
                     var m = angular.copy(qp);
                     m.queries[k] = vecs[y];
                     m.fullurl = buildUrlFromQueryParams(m);
-                    if(urlinlist.indexOf(m.fullurl)!=-1)
+                    if (urlinlist.indexOf(m.fullurl) != -1)
                         continue;
                     urlinlist.push(m.fullurl);
                     $scope.scans.push(m);
@@ -86,7 +86,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
             }
         }
 
-        $scope.clearScanList = function(){
+        $scope.clearScanList = function () {
             $scope.scans = [];
         }
 
@@ -98,14 +98,15 @@ angular.module('crawlApp', ['ui.bootstrap'])
             var tags = hvr.dangerTags.split(',');
             var attrs = hvr.dangerAttributes.split(',');
 
-            for(var x=0;x<scans.length;x++){
+            for (var x = 0; x < scans.length; x++) {
                 var scan = scans[x];
                 var url = scan.fullurl;
-                crawl(url,scan).then(arr=>{
+                crawl(url, scan).then(arr=> {
                     var resp = arr[0];
                     var scan = arr[1];
                     scan.resp = resp.data;
-                    scan.resp.hasDanger = checkDangerTags(scan.resp.HtmlErrors,tags,attrs);
+                    scan.resp.hasDanger = checkDangerTags(scan.resp.HtmlErrors, tags, attrs);
+                    scan.resp.hasDanger = scan.resp.hasDanger || checkDangerRequestInfo(scan.resp.JSInfo, tags);
                 });
             }
         }
@@ -118,12 +119,12 @@ angular.module('crawlApp', ['ui.bootstrap'])
             var url = $scope.inputUrl;
             if ($scope.encodeUrl)
                 url = encodeURI(url);
-            crawl(url,null).then(onNewCrawl);
+            crawl(url, null).then(onNewCrawl);
         }
 
-        function crawl(url,k){
+        function crawl(url, k) {
             return $http.get('/api/dcrawl?url=' + encodeURIComponent(url))
-                .then((resp)=>[resp,k]);
+                .then((resp) => [resp, k]);
         }
 
         function onNewCrawl(arr) {
@@ -138,47 +139,47 @@ angular.module('crawlApp', ['ui.bootstrap'])
             hvr.hasDanger = false;
             var tags = hvr.dangerTags.split(',');
             var attrs = hvr.dangerAttributes.split(',');
-            hvr.hasDanger = checkDangerTags(arr,tags,attrs);
-            var dangerJSInfo = checkDangerRequestInfo($scope.page.Page.JSInfo,tags);
-            var dangerCookies = checkDangerCookies($scope.page.Page.Cookies,tags);
-            $scope.JSInfoPanel = {hasDanger:dangerJSInfo||dangerCookies};
+            hvr.hasDanger = checkDangerTags(arr, tags, attrs);
+            var dangerJSInfo = checkDangerRequestInfo($scope.page.Page.JSInfo, tags);
+            var dangerCookies = checkDangerCookies($scope.page.Page.Cookies, tags);
+            $scope.JSInfoPanel = { hasDanger: dangerJSInfo || dangerCookies };
         }
 
-        function checkDangerTags(htmlErrors,tags,attrs) {
+        function checkDangerTags(htmlErrors, tags, attrs) {
             let hasDanger = false;
             for (let x = 0; x < htmlErrors.length; x++) {
                 let entry = htmlErrors[x];
-                let isDangerTag = tags.indexOf(entry.TagName)!=-1;
-                let isDangerAttribute = attrs.indexOf(entry.AttributeName)!=-1;
-                entry.isDanger=isDangerTag||isDangerAttribute;
-                hasDanger = hasDanger|| entry.isDanger;
+                let isDangerTag = tags.indexOf(entry.TagName) != -1;
+                let isDangerAttribute = attrs.indexOf(entry.AttributeName) != -1;
+                entry.isDanger = isDangerTag || isDangerAttribute;
+                hasDanger = hasDanger || entry.isDanger;
             }
             return hasDanger;
         }
 
-        function checkDangerRequestInfo(jsInfos:IJSInfo[],dangerValues:string[]) {
+        function checkDangerRequestInfo(jsInfos: IJSInfo[], dangerValues: string[]) {
             for (let x = 0; x < jsInfos.length; x++) {
                 let entry = jsInfos[x];
-                for(let y=0;y<dangerValues.length;y++){
-                    if(entry.Value.indexOf('<'+dangerValues[y])>-1)
+                for (let y = 0; y < dangerValues.length; y++) {
+                    if (entry.Value.indexOf('<' + dangerValues[y]) > -1)
                         return true;
                 }
             }
             return false;
         }
 
-        function checkDangerCookies(cookies:ICookie[],dangerValues:string[]) {
+        function checkDangerCookies(cookies: ICookie[], dangerValues: string[]) {
             for (let x = 0; x < cookies.length; x++) {
                 let entry = cookies[x];
-                for(let y=0;y<dangerValues.length;y++){
-                    if(entry.Value.indexOf('<'+dangerValues[y])>-1)
+                for (let y = 0; y < dangerValues.length; y++) {
+                    if (entry.Value.indexOf('<' + dangerValues[y]) > -1)
                         return true;
                 }
             }
             return false;
         }
 
-        $scope.queryParams = {queries: {}, order: [], baseUrl: ''};
+        $scope.queryParams = { queries: {}, order: [], baseUrl: '' };
 
         function setIFrame(data) {
             $scope.iFrameData = $sce.trustAsResourceUrl('data:text/html;charset=utf-8,' + encodeURI(data));
@@ -214,7 +215,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
         }
 
         function getQueryParams(url) {
-            var queryp = {queries: {}, order: [], baseUrl: '', fullurl:''};
+            var queryp = { queries: {}, order: [], baseUrl: '', fullurl: '' };
             if (url == null)
                 return queryp;
 
@@ -234,7 +235,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
             return queryp;
         }
 
-        function buildUrlFromQueryParams(q){
+        function buildUrlFromQueryParams(q) {
             var url = $scope.inputUrl;
             var baseUrl = url.split('?')[0];
             var query = '';
@@ -273,23 +274,16 @@ angular.module('crawlApp', ['ui.bootstrap'])
         $scope.$watch('scanner.scanVectors', function (nVal, oVal) {
             $scope.scanner.scanVectorsArr = [];
             var vectors = nVal.split('\n');
-            for(var x=0;x<vectors.length;x++){
+            for (var x = 0; x < vectors.length; x++) {
                 $scope.scanner.scanVectorsArr.push(vectors[x]);
             }
         });
 
-        $scope.updateQueryParams = function(qp,name,val){
-            if($scope.oldUrlQuery == null)
+        $scope.updateQueryParams = function (qp, name, val) {
+            if ($scope.oldUrlQuery == null)
                 $scope.oldUrlQuery = angular.copy(qp);
             qp.queries[name] = val;
             $scope.updateUrlFromQuery(qp);
-        }
-
-        $scope.restoreQueryParams = function(qp,name){
-            if($scope.oldUrlQuery==null)
-                return;
-            $scope.updateUrlFromQuery($scope.oldUrlQuery);
-            $scope.oldUrlQuery = null;
         }
 
         $scope.addTag = function (htmlError) {
@@ -299,8 +293,8 @@ angular.module('crawlApp', ['ui.bootstrap'])
             $http({
                 method: 'POST',
                 url: '/api/addTag',
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                data: {TagName: tagName, AttributeName: attrName},
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                data: { TagName: tagName, AttributeName: attrName },
                 transformRequest: function (obj) {
                     var str = [];
                     for (var p in obj)
@@ -328,7 +322,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
             localStorage.setItem("dangerTags", $scope.htmlValidator.dangerTags);
             localStorage.setItem("dangerAttributes", $scope.htmlValidator.dangerAttributes);
             localStorage.setItem("scanVectors", $scope.scanner.scanVectors);
-            localStorage.setItem("filterText",$scope.filterText);
+            localStorage.setItem("filterText", $scope.filterText);
         }
 
         function loadUserSettings() {
