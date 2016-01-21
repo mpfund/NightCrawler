@@ -5,11 +5,13 @@ var server = webserver.create();
 
 var service = server.listen(8081, function (request, response) {
     response.statusCode = 200;
-    var page = webPage.create();
     var q = queriesFromUrl(request.url);
-    if (q.url == null)
+    if (q.url == null){
         response.close();
+        return;
+    }
 
+    var page = webPage.create();
     var url = decodeURIComponent(q.url)
 
     getSite(page, url, q.cookie,function(retObj){
@@ -122,6 +124,7 @@ function getSite(page, url,cookie, done) {
                 Requests: requests
             };
             done(ret);
+            return
         }
         done(ret);
     }
