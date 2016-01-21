@@ -227,7 +227,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
                 for (var p in obj)
                     str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
                 return str.join("&");
-            },
+            }
         }).then(function () {
             removeElement($scope.htmlErrors, htmlError);
         });
@@ -267,3 +267,4 @@ angular.module('crawlApp', ['ui.bootstrap'])
             $scope.filterText = filterText;
     }
 });
+//# sourceMappingURL=CrawlCtrl.js.map

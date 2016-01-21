@@ -12,7 +12,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"os/exec"
 	"time"
 )
 
@@ -175,24 +174,24 @@ type PhJsPage struct {
 }
 
 func crawlDynamic(urlStr string) *crawlbase.Page {
-	cmd := exec.Command("phantomjs", "getsource.js", urlStr)
-	//cmd.Stdin = strings.NewReader("some input")
-	var out bytes.Buffer
-	cmd.Stdout = &out
 	timeStart := time.Now()
-	err := cmd.Run()
-	if err != nil {
-		log.Fatal(err)
-	}
+	res, err := http.Get("http://localhost:8081/?url="+urlStr)
+	logFatal(err)
 	timeDur := time.Now().Sub(timeStart)
+
+	body, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	logFatal(err)
 
 	page := crawlbase.Page{}
 	PhJsPage := PhJsPage{}
-	err = json.Unmarshal(out.Bytes(),&PhJsPage)
-	logFatal(err)
-	page.Body = PhJsPage.Body
 
-	ioreader := bytes.NewReader([]byte(PhJsPage.Body))
+	err = json.Unmarshal(body,&PhJsPage)
+	logFatal(err)
+
+	page.Body = PhJsPage.Body
+	
+	ioreader := bytes.NewReader([]byte(page.Body))
 	doc, err := goquery.NewDocumentFromReader(ioreader)
 	logFatal(err)
 
