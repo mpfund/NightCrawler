@@ -167,7 +167,7 @@
         </uib-tab>
         <uib-tab>
             <uib-tab-heading>
-                <i class="glyphicon glyphicon-bell"></i> Links ({{page.Page.Hrefs.length}})
+                <i class="glyphicon glyphicon-bell"></i> Links ({{page.Page.Hrefs.length||0}})
             </uib-tab-heading>
             <div class="row">
                 <div class="col-xs-12">
@@ -180,7 +180,7 @@
                                 <button class="btn btn-default" ng-click="setUrl(l);crawlPage();">
                                     <i class="fa fa-search"></i>
                                 </button>
-                                <button class="btn btn-default" ng-click="clearScanList();generateScanAllParams(queryParams);crawlScanList();">
+                                <button class="btn btn-default" ng-click="addUrlNewScan(l)">
                                     <i class="fa fa-cube"></i>
                                 </button>
                             </td>
@@ -191,7 +191,7 @@
         </uib-tab>
         <uib-tab>
             <uib-tab-heading>
-                <i class="glyphicon glyphicon-bell"></i> Requests ({{page.Page.Requests.length}})
+                <i class="glyphicon glyphicon-bell"></i> Requests ({{page.Page.Requests.length||0}})
             </uib-tab-heading>
             <div class="row">
                 <div class="col-xs-12">
@@ -212,7 +212,7 @@
         </uib-tab>
         <uib-tab>
             <uib-tab-heading>
-                <i class="glyphicon glyphicon-bell"></i> Scanner
+                <i class="glyphicon glyphicon-bell"></i> Scanner ({{scans.length}})
             </uib-tab-heading>
             <div class="row">
                 <div class="col-xs-6">
@@ -223,10 +223,6 @@
                                 <input class="form-control" type="text" ng-model="queryParams.queries[k]"
                                        ng-change="updateUrlFromQuery(queryParams)" />
                             </td>
-                            <!--<td>
-                                <button ng-repeat="vec in scanner.scanVectorsArr"
-                                ng-click="updateQueryParams(queryParams,k,vec)">{{vec}}</button>
-                            </td>-->
                         </tr>
                     </table>
                     <button class="btn btn-default" ng-click="addToScan(queryParams)">Add Url Scan</button>

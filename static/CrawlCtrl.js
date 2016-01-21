@@ -16,6 +16,12 @@ angular.module('crawlApp', ['ui.bootstrap'])
         if ($scope.scans.indexOf(l) == -1)
             $scope.scans.push(angular.copy(l));
     };
+    $scope.addUrlNewScan = function (url) {
+        $scope.clearScanList();
+        var qp = getQueryParams(url);
+        $scope.generateScanAllParams(qp);
+        $scope.crawlScanList();
+    };
     $scope.generateScanAllParams = function (qp) {
         var vecs = $scope.scanner.scanVectorsArr;
         var urlinlist = [];
@@ -35,7 +41,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
     $scope.clearScanList = function () {
         $scope.scans = [];
     };
-    $scope.crawlScanList = function (l) {
+    $scope.crawlScanList = function () {
         var scans = $scope.scans;
         var hvr = $scope.htmlValidator;
         hvr.hasDanger = false;
@@ -49,6 +55,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
                 var scan = arr[1];
                 scan.resp = resp.data;
                 scan.resp.hasDanger = checkDangerTags(scan.resp.HtmlErrors, tags, attrs);
+                scan.resp.hasDanger = scan.resp.hasDanger || checkDangerRequestInfo(scan.resp.Page.JSInfo, tags);
             });
         }
     };
@@ -207,12 +214,6 @@ angular.module('crawlApp', ['ui.bootstrap'])
         qp.queries[name] = val;
         $scope.updateUrlFromQuery(qp);
     };
-    $scope.restoreQueryParams = function (qp, name) {
-        if ($scope.oldUrlQuery == null)
-            return;
-        $scope.updateUrlFromQuery($scope.oldUrlQuery);
-        $scope.oldUrlQuery = null;
-    };
     $scope.addTag = function (htmlError) {
         var tagName = htmlError.TagName;
         var attrName = htmlError.AttributeName;
@@ -226,7 +227,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
                 for (var p in obj)
                     str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
                 return str.join("&");
-            }
+            },
         }).then(function () {
             removeElement($scope.htmlErrors, htmlError);
         });

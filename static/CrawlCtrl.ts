@@ -69,6 +69,13 @@ angular.module('crawlApp', ['ui.bootstrap'])
                 $scope.scans.push(angular.copy(l));
         }
 
+        $scope.addUrlNewScan = function (url) {
+            $scope.clearScanList();
+            var qp = getQueryParams(url);
+            $scope.generateScanAllParams(qp);
+            $scope.crawlScanList();
+        }
+
         $scope.generateScanAllParams = function (qp) {
             var vecs = $scope.scanner.scanVectorsArr;
             var urlinlist = [];
@@ -90,7 +97,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
             $scope.scans = [];
         }
 
-        $scope.crawlScanList = function (l) {
+        $scope.crawlScanList = function () {
             var scans = $scope.scans;
 
             var hvr = $scope.htmlValidator;
@@ -106,7 +113,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
                     var scan = arr[1];
                     scan.resp = resp.data;
                     scan.resp.hasDanger = checkDangerTags(scan.resp.HtmlErrors, tags, attrs);
-                    scan.resp.hasDanger = scan.resp.hasDanger || checkDangerRequestInfo(scan.resp.JSInfo, tags);
+                    scan.resp.hasDanger = scan.resp.hasDanger || checkDangerRequestInfo(scan.resp.Page.JSInfo, tags);
                 });
             }
         }
