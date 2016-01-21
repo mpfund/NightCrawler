@@ -175,7 +175,7 @@ type PhJsPage struct {
 
 func crawlDynamic(urlStr string) *crawlbase.Page {
 	timeStart := time.Now()
-	res, err := http.Get("http://localhost:8081/?url="+urlStr)
+	res, err := http.Get("http://localhost:8081/?url="+url.QueryEscape(urlStr))
 	logFatal(err)
 	timeDur := time.Now().Sub(timeStart)
 

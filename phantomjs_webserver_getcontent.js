@@ -10,7 +10,9 @@ var service = server.listen(8081, function (request, response) {
     if (q.url == null)
         response.close();
 
-    getSite(page, q.url, q.cookie,function(retObj){
+    var url = decodeURIComponent(q.url)
+
+    getSite(page, url, q.cookie,function(retObj){
         response.write(JSON.stringify(retObj));
         response.close();
         page.close();
