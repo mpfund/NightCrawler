@@ -121,7 +121,7 @@
                     Filter: <input type="text" ng-model="filterText">
                     <br>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-8">
                     <table>
                         <tr>
                             <th>Error</th>
@@ -150,7 +150,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="" style="border:1px solid black;">
                         <h4>Scanner Settings</h4>
                         <div class="form-group">
@@ -180,7 +180,7 @@
                                 <button class="btn btn-default" ng-click="setUrl(l);crawlPage();">
                                     <i class="fa fa-search"></i>
                                 </button>
-                                <button class="btn btn-default" ng-click="addUrlNewScan(l)">
+                                <button class="btn btn-default" ng-click="addScanAndRun(l)">
                                     <i class="fa fa-cube"></i>
                                 </button>
                             </td>
@@ -215,7 +215,7 @@
                 <i class="glyphicon glyphicon-bell"></i> Scanner ({{scans.length}})
             </uib-tab-heading>
             <div class="row">
-                <div class="col-xs-6">
+                <div class="col-xs-10">
                     <table class="margin-10">
                         <tr ng-repeat="(k,v) in queryParams.queries">
                             <td style="padding-right:5px;"><label>{{k}}</label></td>
@@ -253,7 +253,7 @@
                         </tr>
                     </table>
                 </div>
-                <div class="col-xs-6">
+                <div class="col-xs-2">
                     <div>
                         <h4>Scanner Settings</h4>
                         <textarea ng-model="scanner.scanVectors" rows="10"></textarea>

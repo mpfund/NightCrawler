@@ -69,8 +69,7 @@ angular.module('crawlApp', ['ui.bootstrap'])
                 $scope.scans.push(angular.copy(l));
         }
 
-        $scope.addUrlNewScan = function (url) {
-            $scope.clearScanList();
+        $scope.addScanAndRun = function (url) {
             var qp = getQueryParams(url);
             $scope.generateScanAllParams(qp);
             $scope.crawlScanList();
@@ -108,6 +107,9 @@ angular.module('crawlApp', ['ui.bootstrap'])
             for (var x = 0; x < scans.length; x++) {
                 var scan = scans[x];
                 var url = scan.fullurl;
+                if(scan.inProgress)
+                    continue;
+                scan.inProgress = true;
                 crawl(url, scan).then(arr=> {
                     var resp = arr[0];
                     var scan = arr[1];
