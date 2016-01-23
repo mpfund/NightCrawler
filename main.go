@@ -1,13 +1,14 @@
 package main
 
 import (
+	"./httpmitm"
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"github.com/BlackEspresso/crawlbase"
 	"github.com/BlackEspresso/htmlcheck"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/robertkrimen/otto"
+	"gopkg.in/mgo.v2"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -20,6 +21,8 @@ type Response struct {
 	HtmlErrors []*htmlcheck.ValidationError
 }
 
+var session *mgo.Session
+
 func main() {
 	http.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.URL.Path[1:])
@@ -30,8 +33,31 @@ func main() {
 	http.HandleFunc("/api/crawl", apiCrawlRequest)
 	http.HandleFunc("/api/dcrawl", apiDynamicCrawlRequest)
 	http.HandleFunc("/api/addTag", apiAddTag)
-	http.HandleFunc("/api/runScript", apiRunScript)
+	http.HandleFunc("/api/scripting", apiRunScript)
+	http.HandleFunc("/api/proxyrequests", apiProxyRequests)
+
+	var err error
+	session, err = mgo.Dial("localhost")
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+
+	go func() {
+		simpleProxyHandler := http.HandlerFunc(httpmitm.GenSimpleHandlerFunc(req, resp))
+		http.ListenAndServe(":8081", simpleProxyHandler)
+	}()
 	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+func req(r *http.Request) {
+
+}
+
+func resp(r *http.Request, req *http.Response, dur time.Duration) {
+	page := PageFromResponse(r, req, dur)
+	c := session.DB("checkSite").C("requests")
+	c.Insert(page)
 }
 
 func staticSites(w http.ResponseWriter, r *http.Request) {
@@ -44,10 +70,10 @@ func testSite(w http.ResponseWriter, r *http.Request) {
 	inpage := r.URL.Query().Get("inpage")
 	inscript := r.URL.Query().Get("inscript")
 	ineval := r.URL.Query().Get("ineval")
-	
-	w.Write([]byte("<html>" + inpage+"<script>var m = '"+inscript+
-		"';document.write(m);document.cookie='test='+m</script>"+
-		"<script>eval("+ ineval+ ")</script>" +
+
+	w.Write([]byte("<html>" + inpage + "<script>var m = '" + inscript +
+		"';document.write(m);document.cookie='test='+m</script>" +
+		"<script>eval(" + ineval + ")</script>" +
 		"<script>document.write(decodeURIComponent(document.location.hash))</script>" +
 		"</html>"))
 }
@@ -64,6 +90,14 @@ func apiRunScript(w http.ResponseWriter, r *http.Request) {
 	b, err := json.Marshal(val)
 	logFatal(err)
 	w.Write(b)
+}
+
+func apiProxyRequests(w http.ResponseWriter, r *http.Request) {
+	c := session.DB("checkSite").C("requests")
+	var pages []crawlbase.Page
+	c.Find(nil).(&pages)
+	k,_:= json.Marshal(pages)
+	w.Write(k)
 }
 
 func apiDynamicCrawlRequest(w http.ResponseWriter, r *http.Request) {
@@ -169,17 +203,43 @@ func loadTagsFromFile() []htmlcheck.ValidTag {
 }
 
 type PhJsPage struct {
-	Body     string
-	JSwrites []string
-	JSevals []string
+	Body       string
+	JSwrites   []string
+	JSevals    []string
 	JStimeouts []string
-	Cookies []crawlbase.Cookie
-	Requests []string
+	Cookies    []crawlbase.Cookie
+	Requests   []string
+}
+
+func PageFromResponse(req *http.Request, res *http.Response, timeDur time.Duration) *crawlbase.Page {
+	page := crawlbase.Page{}
+	body, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+
+	if err == nil {
+		page.Body = string(body)
+		ioreader := bytes.NewReader(body)
+		doc, err := goquery.NewDocumentFromReader(ioreader)
+		if err == nil {
+			page := crawlbase.Page{}
+			page.Hrefs = crawlbase.GetHrefs(doc, req.URL)
+			page.Forms = crawlbase.GetFormUrls(doc, req.URL)
+			page.Ressources = crawlbase.GetRessources(doc, req.URL)
+		}
+	}
+
+	page.CrawlTime = int(time.Now().Unix())
+	page.URL = req.URL.String()
+	page.RequestURI = req.RequestURI
+	page.Uid = crawlbase.ToSha256(page.URL)
+	page.RespCode = res.StatusCode
+	page.RespDuration = int(timeDur.Seconds() * 1000)
+	return &page
 }
 
 func crawlDynamic(urlStr string) *crawlbase.Page {
 	timeStart := time.Now()
-	res, err := http.Get("http://localhost:8081/?url="+url.QueryEscape(urlStr))
+	res, err := http.Get("http://localhost:8079/?url=" + url.QueryEscape(urlStr))
 	logFatal(err)
 	timeDur := time.Now().Sub(timeStart)
 
@@ -187,14 +247,14 @@ func crawlDynamic(urlStr string) *crawlbase.Page {
 	res.Body.Close()
 	logFatal(err)
 
-	page := crawlbase.Page{}
 	PhJsPage := PhJsPage{}
 
-	err = json.Unmarshal(body,&PhJsPage)
+	err = json.Unmarshal(body, &PhJsPage)
 	logFatal(err)
 
+	page := crawlbase.Page{}
 	page.Body = PhJsPage.Body
-	
+
 	ioreader := bytes.NewReader([]byte(page.Body))
 	doc, err := goquery.NewDocumentFromReader(ioreader)
 	logFatal(err)
@@ -207,30 +267,30 @@ func crawlDynamic(urlStr string) *crawlbase.Page {
 	page.Ressources = crawlbase.GetRessources(doc, baseUrl)
 
 	page.CrawlTime = int(time.Now().Unix())
-	page.Url = urlStr
+	page.URL = urlStr
 	page.RespCode = 200
 	page.RespDuration = int(timeDur.Seconds() * 1000)
 	page.Uid = crawlbase.ToSha256(urlStr)
-	page.Cookies = PhJsPage.Cookies;
+	page.Cookies = PhJsPage.Cookies
 
 	jsinfos := []crawlbase.JSInfo{}
-	for _,v:=range PhJsPage.JSwrites{
-		info := crawlbase.JSInfo{"document.write",v}
-		jsinfos = append(jsinfos,info)
+	for _, v := range PhJsPage.JSwrites {
+		info := crawlbase.JSInfo{"document.write", v}
+		jsinfos = append(jsinfos, info)
 	}
-	for _,v:=range PhJsPage.JSevals{
-		info := crawlbase.JSInfo{"eval",v}
-		jsinfos = append(jsinfos,info)
+	for _, v := range PhJsPage.JSevals {
+		info := crawlbase.JSInfo{"eval", v}
+		jsinfos = append(jsinfos, info)
 	}
-	for _,v:=range PhJsPage.JStimeouts{
-		info := crawlbase.JSInfo{"setTimeout",v}
-		jsinfos = append(jsinfos,info)
+	for _, v := range PhJsPage.JStimeouts {
+		info := crawlbase.JSInfo{"setTimeout", v}
+		jsinfos = append(jsinfos, info)
 	}
-	for _,v:=range PhJsPage.Requests{
-		info := crawlbase.Ressource{v,"","",""}
-		page.Requests = append(page.Requests,info)
+	for _, v := range PhJsPage.Requests {
+		info := crawlbase.Ressource{v, "", "", ""}
+		page.Requests = append(page.Requests, info)
 	}
-	
+
 	page.JSInfo = jsinfos
 
 	return &page
@@ -252,30 +312,8 @@ func crawl(urlStr string) *crawlbase.Page {
 	}
 	timeDur := time.Now().Sub(timeStart)
 
-	body, err := ioutil.ReadAll(res.Body)
-	res.Body.Close()
-	logFatal(err)
-
-	fmt.Println("crawling " + urlStr)
-	ioreader := bytes.NewReader(body)
-	doc, err := goquery.NewDocumentFromReader(ioreader)
-	logFatal(err)
-
-	baseUrl, err := url.Parse(urlStr)
-	logFatal(err)
-
-	page := crawlbase.Page{}
-	page.Hrefs = crawlbase.GetHrefs(doc, baseUrl)
-	page.Forms = crawlbase.GetFormUrls(doc, baseUrl)
-	page.Ressources = crawlbase.GetRessources(doc, baseUrl)
-
-	page.CrawlTime = int(time.Now().Unix())
-	page.Url = urlStr
-	page.RespCode = res.StatusCode
-	page.RespDuration = int(timeDur.Seconds() * 1000)
-	page.Uid = crawlbase.ToSha256(urlStr)
-	page.Body = string(body)
-	return &page
+	page := PageFromResponse(req, res, timeDur)
+	return page
 }
 
 func logFatal(err error) {

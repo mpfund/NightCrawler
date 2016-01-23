@@ -3,7 +3,7 @@ var webPage = require('webpage');
 
 var server = webserver.create();
 
-var service = server.listen(8081, function (request, response) {
+var service = server.listen(8079, function (request, response) {
     response.statusCode = 200;
     var q = queriesFromUrl(request.url);
     if (q.url == null){
