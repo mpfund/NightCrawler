@@ -186,8 +186,12 @@ func simpleProxyHandlerFunc(w http.ResponseWriter, r *http.Request, cReq Callbac
 
 		copyHeaders(w.Header(), resp.Header)
 		// copy content
-		defer resp.Body.Close()
-		io.Copy(w, resp.Body)
+		//defer resp.Body.Close()
+		bodyContent,_ := ioutil.ReadAll(resp.Body)
+		w.Write(bodyContent)
+		
+		//restore body		
+		resp.Body = ioutil.NopCloser(bytes.NewBuffer(bodyContent))
 		cResp(r, resp, time.Now().Sub(timeStart))
 	}
 }

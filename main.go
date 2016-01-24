@@ -95,7 +95,7 @@ func apiRunScript(w http.ResponseWriter, r *http.Request) {
 func apiProxyRequests(w http.ResponseWriter, r *http.Request) {
 	c := session.DB("checkSite").C("requests")
 	var pages []crawlbase.Page
-	c.Find(nil).(&pages)
+	c.Find(nil).All(&pages)
 	k,_:= json.Marshal(pages)
 	w.Write(k)
 }
@@ -214,14 +214,12 @@ type PhJsPage struct {
 func PageFromResponse(req *http.Request, res *http.Response, timeDur time.Duration) *crawlbase.Page {
 	page := crawlbase.Page{}
 	body, err := ioutil.ReadAll(res.Body)
-	res.Body.Close()
 
 	if err == nil {
 		page.Body = string(body)
 		ioreader := bytes.NewReader(body)
 		doc, err := goquery.NewDocumentFromReader(ioreader)
 		if err == nil {
-			page := crawlbase.Page{}
 			page.Hrefs = crawlbase.GetHrefs(doc, req.URL)
 			page.Forms = crawlbase.GetFormUrls(doc, req.URL)
 			page.Ressources = crawlbase.GetRessources(doc, req.URL)
