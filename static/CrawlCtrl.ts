@@ -131,6 +131,12 @@ angular.module('crawlApp', ['ui.bootstrap'])
             crawl(url, null).then(onNewCrawl);
         }
 
+        $scope.refreshProxyRequests = function(){
+            $http.get('/api/proxyrequests').then((resp)=>{
+               $scope.proxyRequests = resp.data;
+            });
+        }
+
         function crawl(url, k) {
             return $http.get('/api/dcrawl?url=' + encodeURIComponent(url))
                 .then((resp) => [resp, k]);
