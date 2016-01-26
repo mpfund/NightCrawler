@@ -1,5 +1,17 @@
 /// <reference path="./TypeFiles/angular.d.ts"/>
 
+angular.module('encoders', []).filter('uriComponent', function() {
+    return function(input,decode) {
+        try {
+            if (decode !== true)
+                return encodeURIComponent(input)
+            return decodeURIComponent(input)
+        }
+        catch(e){
+            return ''
+        }
+    };
+});
 
 interface IPage {
     Url: string
@@ -48,7 +60,7 @@ interface IJSInfo {
     Value: string
 }
 
-angular.module('crawlApp', ['ui.bootstrap'])
+angular.module('crawlApp', ['ui.bootstrap','encoders'])
     .controller('CrawlCtrl', function ($scope, $http, $sce) {
         $scope.page = <IPage>null;
         $scope.htmlErrors = [];
