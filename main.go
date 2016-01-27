@@ -2,6 +2,7 @@ package main
 
 import (
 	"./httpmitm"
+	"./servertasks"
 	"bytes"
 	"encoding/json"
 	"github.com/BlackEspresso/crawlbase"
@@ -35,7 +36,7 @@ func main() {
 	http.HandleFunc("/api/addTag", apiAddTag)
 	http.HandleFunc("/api/scripting", apiRunScript)
 	http.HandleFunc("/api/proxyrequests", apiProxyRequests)
-
+	http.HandleFunc("/tasks", servertasks.GenHandler(gHandler))
 	var err error
 	session, err = mgo.Dial("localhost")
 	if err != nil {
@@ -43,11 +44,25 @@ func main() {
 	}
 	defer session.Close()
 
+	servertasks.Start()
+
 	go func() {
 		simpleProxyHandler := http.HandlerFunc(httpmitm.GenSimpleHandlerFunc(req, resp))
 		http.ListenAndServe(":8081", simpleProxyHandler)
 	}()
 	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+func gHandler(t *servertasks.TaskBlock, r *http.Request) {
+	js := r.FormValue("jsFunc")
+	t.Func = func(task *servertasks.TaskBlock) {
+		vm := otto.New()
+		k, _ := vm.Run(js)
+		task.Done = true
+
+		txt, _ := k.ToString()
+		task.SuccessText = txt
+	}
 }
 
 func req(r *http.Request) {
@@ -96,7 +111,7 @@ func apiProxyRequests(w http.ResponseWriter, r *http.Request) {
 	c := session.DB("checkSite").C("requests")
 	var pages []crawlbase.Page
 	c.Find(nil).All(&pages)
-	k,_:= json.Marshal(pages)
+	k, _ := json.Marshal(pages)
 	w.Write(k)
 }
 

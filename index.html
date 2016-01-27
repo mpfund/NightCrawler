@@ -303,7 +303,7 @@
 
                     <label>Encode</label>
                     <input class="form-control" ng-model="inputEncode" />
-                    <input class="form-control" value="{{inputEncode|uriComponent:encodeUri}}" />
+                    <input class="form-control" type="text" readonly value="{{inputEncode|uriComponent:encodeUri}}" />
 
             </div>
         </uib-tab>
@@ -312,10 +312,14 @@
                 <i class="glyphicon glyphicon-bell"></i> Scripting
             </uib-tab-heading>
             <div class="row">
-                <textarea id="userScript" cols="80" rows="20">
-                    function run(){
-                    }
-                </textarea>
+
+                <form action="/tasks" method="post">
+                    <input type="name" value="js1"><br>
+                    <textarea name="jsFunc" cols="80" rows="20">
+console.log(4);
+                    </textarea><br>
+                    <input type="submit" />
+                </form>
             </div>
         </uib-tab>
 		<uib-tab>
