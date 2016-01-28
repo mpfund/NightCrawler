@@ -13,7 +13,8 @@ type TaskCreator func(*TaskBlock, *http.Request)
 type TaskBlock struct {
 	Name        string
 	Start       int64
-	Duration    int
+	Repeat      int
+	RunTime     int
 	Done        bool
 	Success     bool
 	SuccessText string
@@ -26,14 +27,18 @@ var tasks []*TaskBlock = []*TaskBlock{}
 func Start() {
 	go func() {
 		for {
-			for _, v := range tasks {
-				if !v.Done {
-					v.Func(v)
-				}
-			}
+			RunTasks()
 			time.Sleep(time.Second * 5)
 		}
 	}()
+}
+
+func RunTasks() {
+	for _, v := range tasks {
+		if !v.Done {
+			v.Func(v)
+		}
+	}
 }
 
 func GenHandler(fc TaskCreator) func(w http.ResponseWriter, r *http.Request) {

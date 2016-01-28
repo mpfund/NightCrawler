@@ -1,20 +1,24 @@
 package main
 
 import (
-	"./httpmitm"
-	"./servertasks"
 	"bytes"
 	"encoding/json"
+	"io/ioutil"
+	"log"
+	"net"
+	"net/http"
+	"net/url"
+	"time"
+
+	"github.com/miekg/dns"
+
+	"./httpmitm"
+	"./servertasks"
 	"github.com/BlackEspresso/crawlbase"
 	"github.com/BlackEspresso/htmlcheck"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/robertkrimen/otto"
 	"gopkg.in/mgo.v2"
-	"io/ioutil"
-	"log"
-	"net/http"
-	"net/url"
-	"time"
 )
 
 type Response struct {
@@ -56,13 +60,35 @@ func main() {
 func gHandler(t *servertasks.TaskBlock, r *http.Request) {
 	js := r.FormValue("jsFunc")
 	t.Func = func(task *servertasks.TaskBlock) {
-		vm := otto.New()
+		vm := newJSRuntime()
 		k, _ := vm.Run(js)
 		task.Done = true
 
 		txt, _ := k.ToString()
 		task.SuccessText = txt
 	}
+}
+
+func resolveDns(name string) otto.Value {
+	config, _ := dns.ClientConfigFromFile("/etc/resolv.conf")
+	c := new(dns.Client)
+
+	m := new(dns.Msg)
+	m.SetQuestion(dns.Fqdn(name), dns.TypeANY)
+	m.RecursionDesired = true
+	r, _, err := c.Exchange(m, net.JoinHostPort(config.Servers[0], config.Port))
+	if err != nil {
+		k, _ := otto.ToValue(nil)
+		return k
+	}
+	k, _ := otto.ToValue(r.Answer)
+	return k
+}
+
+func newJSRuntime() *otto.Otto {
+	vm := otto.New()
+	vm.Set("resolveDNS", resolveDns)
+	return vm
 }
 
 func req(r *http.Request) {
