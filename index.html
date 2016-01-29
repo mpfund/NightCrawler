@@ -312,14 +312,20 @@
                 <i class="glyphicon glyphicon-bell"></i> Scripting
             </uib-tab-heading>
             <div class="row">
-
-                <form action="/tasks" method="post">
-                    <input type="name" value="js1"><br>
+                <form action="/tasks" method="post" target="hiddenIFrame">
+                    <input type="name" name="name" value="js1"><br>
                     <textarea name="jsFunc" cols="80" rows="20">
 console.log(4);
                     </textarea><br>
                     <input type="submit" />
                 </form>
+                <iframe name="hiddenIFrame" id="hiddenIFrame" style="display: none;"></iframe>
+                <button ng-click="refreshTasks()">refresh</button>
+                <div ng-repeat="t in tasks" style="border:1px solid black;">
+                    <span>{{t.Name}}</span><br>
+                    <span>{{t.SuccessText}}</span><br>
+                    <span>{{t.ErrorText}}</span>
+                </div>
             </div>
         </uib-tab>
 		<uib-tab>

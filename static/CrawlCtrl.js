@@ -49,6 +49,9 @@ angular.module('crawlApp', ['ui.bootstrap', 'encoders'])
             }
         }
     };
+    $scope.refreshTasks = function () {
+        $http.get('/tasks').then(function (e) { return $scope.tasks = e.data; });
+    };
     $scope.clearScanList = function () {
         $scope.scans = [];
     };

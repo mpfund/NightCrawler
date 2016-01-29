@@ -38,7 +38,7 @@ func main() {
 	http.HandleFunc("/api/crawl", apiCrawlRequest)
 	http.HandleFunc("/api/dcrawl", apiDynamicCrawlRequest)
 	http.HandleFunc("/api/addTag", apiAddTag)
-	http.HandleFunc("/api/scripting", apiRunScript)
+	http.HandleFunc("/api/runscript", apiRunScript)
 	http.HandleFunc("/api/proxyrequests", apiProxyRequests)
 	http.HandleFunc("/tasks", servertasks.GenHandler(gHandler))
 	var err error
@@ -61,33 +61,51 @@ func gHandler(t *servertasks.TaskBlock, r *http.Request) {
 	js := r.FormValue("jsFunc")
 	t.Func = func(task *servertasks.TaskBlock) {
 		vm := newJSRuntime()
-		k, _ := vm.Run(js)
+		k, err := vm.Run(js)
 		task.Done = true
-
-		txt, _ := k.ToString()
-		task.SuccessText = txt
+		if err == nil {
+			txt, err2 := k.ToString()
+			if err2 != nil {
+				task.ErrorText = err2.Error()
+			} else {
+				task.SuccessText = txt
+			}
+		} else {
+			task.ErrorText = err.Error()
+		}
 	}
 }
 
-func resolveDns(name string) otto.Value {
-	config, _ := dns.ClientConfigFromFile("c:\\resolv.conf")
+func resolveDNS(call otto.FunctionCall) otto.Value {
+	name, err := call.Argument(0).ToString()
+	if err != nil {
+		return otto.UndefinedValue()
+	}
+
+	config, _ := dns.ClientConfigFromFile("./resolv.conf")
 	c := new(dns.Client)
 
 	m := new(dns.Msg)
 	m.SetQuestion(dns.Fqdn(name), dns.TypeANY)
 	m.RecursionDesired = true
+
 	r, _, err := c.Exchange(m, net.JoinHostPort(config.Servers[0], config.Port))
 	if err != nil {
-		k, _ := otto.ToValue(nil)
+		k, _ := otto.ToValue("")
 		return k
 	}
-	k, _ := otto.ToValue(r.Answer)
-	return k
+	resp := ""
+	for _, v := range r.Answer {
+		resp += v.String()
+		resp += "\n"
+	}
+	respV, _ := otto.ToValue(resp)
+	return respV
 }
 
 func newJSRuntime() *otto.Otto {
 	vm := otto.New()
-	vm.Set("resolveDNS", resolveDns)
+	vm.Set("resolveDNS", resolveDNS)
 	return vm
 }
 
@@ -120,17 +138,16 @@ func testSite(w http.ResponseWriter, r *http.Request) {
 }
 
 func apiRunScript(w http.ResponseWriter, r *http.Request) {
-	script := r.URL.Query().Get("script")
-	vm := otto.New()
+	script := r.URL.Query().Get("jsFunc")
+	w.Header().Set("Content-Type", "text/plain")
+	vm := newJSRuntime()
 	v, err := vm.Run(script)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 	val, _ := v.ToString()
-	b, err := json.Marshal(val)
-	logFatal(err)
-	w.Write(b)
+	w.Write([]byte(val))
 }
 
 func apiProxyRequests(w http.ResponseWriter, r *http.Request) {

@@ -73,8 +73,8 @@ func putTask(w http.ResponseWriter, r *http.Request, fc TaskCreator) {
 	}
 
 	t := TaskBlock{}
-	t.Name = r.FormValue("Name")
-	k, err := time.Parse(time.RFC822, r.FormValue("Start"))
+	t.Name = r.FormValue("name")
+	k, err := time.Parse(time.RFC822, r.FormValue("start"))
 	if err != nil {
 		t.Start = k.Unix()
 	}
