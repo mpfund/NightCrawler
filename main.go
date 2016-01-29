@@ -70,7 +70,7 @@ func gHandler(t *servertasks.TaskBlock, r *http.Request) {
 }
 
 func resolveDns(name string) otto.Value {
-	config, _ := dns.ClientConfigFromFile("/etc/resolv.conf")
+	config, _ := dns.ClientConfigFromFile("c:\\resolv.conf")
 	c := new(dns.Client)
 
 	m := new(dns.Msg)
