@@ -1,1 +1,441 @@
-[{"Name":"!DOCTYPE","Attrs":[],"IsSelfClosing":false},{"Name":"a","Attrs":["charset","coords","download","hreflang","media","name","rel","rev","shape","target","type","id","title","class","style","href","onclick","role","data-toggle"],"IsSelfClosing":false},{"Name":"p","Attrs":["class","style","id","lang","dir"],"IsSelfClosing":false},{"Name":"header","Attrs":["class","role","id"],"IsSelfClosing":false},{"Name":"figure","Attrs":["class"],"IsSelfClosing":false},{"Name":"figcaption","Attrs":[],"IsSelfClosing":false},{"Name":"select","Attrs":["id","name","class"],"IsSelfClosing":false},{"Name":"iframe","Attrs":["id","name","class","style","allowtransparency"],"IsSelfClosing":false},{"Name":"section","Attrs":["id","class","style"],"IsSelfClosing":false},{"Name":"script","Attrs":["type","src","language","charset","async","id"],"IsSelfClosing":false},{"Name":"fieldset","Attrs":[],"IsSelfClosing":false},{"Name":"div","Attrs":["class","id","style","role","onclick","title","align","width","nowrap","onload"],"IsSelfClosing":false},{"Name":"html","Attrs":["lang","xmlns","class","id","style","itemscope","itemtype"],"IsSelfClosing":false},{"Name":"head","Attrs":[],"IsSelfClosing":false},{"Name":"aside","Attrs":["class"],"IsSelfClosing":false},{"Name":"i","Attrs":["class","style","title"],"IsSelfClosing":false},{"Name":"base","Attrs":["href"],"IsSelfClosing":true},{"Name":"input","Attrs":["class","id","maxlength","name","placeholder","required","size","type","value","id","alt","src","autocomplete","tabindex","checked","disabled","onclick","style","title","aria-autocomplete","spellcheck","autofocus","role"],"IsSelfClosing":true},{"Name":"iframe","Attrs":["height","frameborder","scrolling","style","name","src","class","height","width","allowfullscreen","id"],"IsSelfClosing":false},{"Name":"noscript","Attrs":["class","style","id"],"IsSelfClosing":false},{"Name":"dl","Attrs":["class","style","id"],"IsSelfClosing":false},{"Name":"dd","Attrs":["class","style","id"],"IsSelfClosing":false},{"Name":"dt","Attrs":["class","style","id"],"IsSelfClosing":false},{"Name":"option","Attrs":["selected","value","class","id","style"],"IsSelfClosing":false},{"Name":"time","Attrs":["datetime"],"IsSelfClosing":false},{"Name":"article","Attrs":[],"IsSelfClosing":false},{"Name":"footer","Attrs":["class","id"],"IsSelfClosing":false},{"Name":"form","Attrs":["id","accept-charset","action","name","method","role","target","class","novalidate","autocomplete"],"IsSelfClosing":false},{"Name":"font","Attrs":["color"],"IsSelfClosing":false},{"Name":"nav","Attrs":["role","id"],"IsSelfClosing":false},{"Name":"small","Attrs":["class"],"IsSelfClosing":false},{"Name":"button","Attrs":["type","id","class","tabindex","value","title","onclick"],"IsSelfClosing":false},{"Name":"span","Attrs":["class","style","id"],"IsSelfClosing":false},{"Name":"style","Attrs":["type","media"],"IsSelfClosing":false},{"Name":"svg","Attrs":["viewbox","xmlns","preserveaspectratio"],"IsSelfClosing":false},{"Name":"center","Attrs":[],"IsSelfClosing":false},{"Name":"path","Attrs":["fill","fill-rule","clip-rule","d"],"IsSelfClosing":false},{"Name":"label","Attrs":["class","for"],"IsSelfClosing":false},{"Name":"textarea","Attrs":["class","autocomplete"],"IsSelfClosing":false},{"Name":"legend","Attrs":["class"],"IsSelfClosing":false},{"Name":"area","Attrs":["class","style","id"],"IsSelfClosing":false},{"Name":"b","Attrs":["class","style"],"IsSelfClosing":false},{"Name":"q","Attrs":["class","style","cite","id","title"],"IsSelfClosing":false},{"Name":"meta","Attrs":["charset","name","content","http-equiv","property","scheme","id","itemtype","itemscope","itemref","itemprop"],"IsSelfClosing":true},{"Name":"body","Attrs":["bgcolor","class","style","id","onload"],"IsSelfClosing":false},{"Name":"link","Attrs":["id","href","media","sizes","title","type","rel","content","hreflang","itemprop"],"IsSelfClosing":true},{"Name":"title","Attrs":[],"IsSelfClosing":false},{"Name":"embed","Attrs":["id","class","style"],"IsSelfClosing":true},{"Name":"u","Attrs":[],"IsSelfClosing":false},{"Name":"sup","Attrs":[],"IsSelfClosing":false},{"Name":"br","Attrs":["class","clear","id","style"],"IsSelfClosing":true},{"Name":"em","Attrs":["id","class","style"],"IsSelfClosing":false},{"Name":"code","Attrs":["id","class","style"],"IsSelfClosing":false},{"Name":"strong","Attrs":["id","class","style"],"IsSelfClosing":true},{"Name":"address","Attrs":["id","class","style"],"IsSelfClosing":true},{"Name":"h1","Attrs":["class","id","style"],"IsSelfClosing":false},{"Name":"h2","Attrs":["class","id","style"],"IsSelfClosing":false},{"Name":"h3","Attrs":["class","id","style"],"IsSelfClosing":false},{"Name":"h4","Attrs":["class","id","style"],"IsSelfClosing":false},{"Name":"h5","Attrs":["class","id","style"],"IsSelfClosing":false},{"Name":"h6","Attrs":["class","id","style"],"IsSelfClosing":false},{"Name":"ol","Attrs":["class","id"],"IsSelfClosing":false},{"Name":"ul","Attrs":["class","id","role","aria-label"],"IsSelfClosing":false},{"Name":"li","Attrs":["class","id","style","title"],"IsSelfClosing":true},{"Name":"img","Attrs":["src","id","alt","title","class","height","border","style","width","srcset"],"IsSelfClosing":true},{"Name":"hr","Attrs":["class"],"IsSelfClosing":true},{"Name":"pre","Attrs":[],"IsSelfClosing":false},{"Name":"blockquote","Attrs":[],"IsSelfClosing":false},{"Name":"table","Attrs":["align","cellspacing","class","width","height","border","cellpadding"],"IsSelfClosing":false},{"Name":"td","Attrs":["align","class","id","style","nowrap","colspan","rowspan","width"],"IsSelfClosing":false},{"Name":"tr","Attrs":["valign","title","class"],"IsSelfClosing":false},{"Name":"th","Attrs":["align","style"],"IsSelfClosing":false},{"Name":"thead","Attrs":[],"IsSelfClosing":false},{"Name":"tbody","Attrs":[],"IsSelfClosing":false},{"Name":"del","Attrs":[],"IsSelfClosing":false},{"Name":"nobr","Attrs":[""],"IsSelfClosing":false},{"Name":"object","Attrs":["id"],"IsSelfClosing":false},{"Name":"canvas","Attrs":[],"IsSelfClosing":false}]
+[
+  {
+    "Name": "!DOCTYPE",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "",
+    "Attrs": [
+      "id",
+      "class",
+      "lang",
+      "role",
+      "style",
+      "aria-grabbed",
+      "aria-label",
+      "aria-hidden",
+      "aria-expanded",
+      "aria-dropeffect",
+      "aria-controls",
+      "tabindex",
+      "onmousedown",
+      "onmouseup",
+      "onload",
+      "dir",
+      "accesskey",
+      "contenteditable",
+      "translate"
+    ],
+    "AttrRegEx": "^data-"
+  },
+  {
+    "Name": "a",
+    "Attrs": [
+      "charset",
+      "coords",
+      "download",
+      "hreflang",
+      "media",
+      "name",
+      "rel",
+      "rev",
+      "shape",
+      "target",
+      "type",
+      "title",
+      "class",
+      "style",
+      "href",
+      "onclick",
+      "role",
+      "data-toggle"
+    ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "p",
+    "Attrs": [ "dir" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "header",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "figure",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "figcaption",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "select",
+    "Attrs": [ "name" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "iframe",
+    "Attrs": [ "name", "allowtransparency" ],
+    "IsSelfClosing": false
+  },
+   {
+    "Name": "cite",
+    "Attrs": [  ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "section",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "script",
+    "Attrs": [ "type", "src", "language", "charset", "async","defer" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "fieldset",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "div",
+    "Attrs": [ "onclick", "title", "align", "width", "nowrap", "onload" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "html",
+    "Attrs": [ "xmlns", "itemscope", "itemtype" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "head",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "aside",
+    "Attrs": [ "class" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "i",
+    "Attrs": [ "title" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "base",
+    "Attrs": [ "href" ],
+    "IsSelfClosing": true
+  },
+  {
+    "Name": "input",
+    "Attrs": [ "class", "maxlength", "name", "placeholder", "required", "size", "type", "value", "alt", "src", "autocomplete", "tabindex", "checked", "disabled", "onclick", "style", "title", "aria-autocomplete", "spellcheck", "autofocus" ],
+    "IsSelfClosing": true
+  },
+  {
+    "Name": "iframe",
+    "Attrs": [ "height", "frameborder", "scrolling", "name", "src", "height", "width", "allowfullscreen" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "noscript",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "dl",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "dd",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "dt",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "option",
+    "Attrs": [ "selected", "value" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "time",
+    "Attrs": [ "datetime" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "article",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "footer",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "form",
+    "Attrs": [ "accept-charset", "action", "name", "method", "target", "novalidate", "autocomplete", "onsubmit" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "font",
+    "Attrs": [ "color" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "nav",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "small",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "button",
+    "Attrs": [ "type", "tabindex", "value", "title", "onclick", "name", "href" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "span",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "style",
+    "Attrs": [ "type", "media" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "svg",
+    "Attrs": [ "viewbox", "xmlns", "preserveaspectratio" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "center",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "path",
+    "Attrs": [ "fill", "fill-rule", "clip-rule", "d" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "label",
+    "Attrs": [ "for" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "textarea",
+    "Attrs": [ "name", "autocomplete" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "legend",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "area",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "b",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "q",
+    "Attrs": [ "cite", "title" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "meta",
+    "Attrs": [ "charset", "name", "content", "http-equiv", "property", "scheme", "itemtype", "itemscope", "itemref", "itemprop" ],
+    "IsSelfClosing": true
+  },
+  {
+    "Name": "body",
+    "Attrs": [ "bgcolor", "onload" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "link",
+    "Attrs": [ "href", "media", "sizes", "title", "type", "rel", "content", "hreflang", "itemprop" ],
+    "IsSelfClosing": true
+  },
+  {
+    "Name": "title",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "embed",
+    "Attrs": [ ],
+    "IsSelfClosing": true
+  },
+  {
+    "Name": "u",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "sup",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "br",
+    "Attrs": [ "clear" ],
+    "IsSelfClosing": true
+  },
+  {
+    "Name": "em",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "code",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "strong",
+    "Attrs": [ ],
+    "IsSelfClosing": true
+  },
+  {
+    "Name": "address",
+    "Attrs": [ ],
+    "IsSelfClosing": true
+  },
+  {
+    "Name": "h1",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "h2",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "h3",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "h4",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "h5",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "h6",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "ol",
+    "Attrs": [ "class" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "ul",
+    "Attrs": [ "class", "role", "aria-label" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "li",
+    "Attrs": [ "title" ],
+    "IsSelfClosing": true
+  },
+  {
+    "Name": "img",
+    "Attrs": [ "src", "alt", "title", "height", "border", "width", "srcset" ],
+    "IsSelfClosing": true
+  },
+  {
+    "Name": "hr",
+    "Attrs": [ "class" ],
+    "IsSelfClosing": true
+  },
+  {
+    "Name": "pre",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "blockquote",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "table",
+    "Attrs": [ "align", "cellspacing", "class", "width", "height", "border", "cellpadding" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "td",
+    "Attrs": [ "align", "nowrap", "colspan", "rowspan", "width" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "tr",
+    "Attrs": [ "valign", "title" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "th",
+    "Attrs": [ "align", "colspan" ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "thead",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "tbody",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "del",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "nobr",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "object",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  },
+  {
+    "Name": "canvas",
+    "Attrs": [ ],
+    "IsSelfClosing": false
+  }
+]
